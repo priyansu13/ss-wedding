@@ -9,7 +9,7 @@ const mapsEmbedUrl =
   )}&output=embed`;
 const shehnaiSrc =
   import.meta.env.VITE_SHEHNAI_AUDIO_URL ||
-  "/music/Sehnai_Dhun_Mangal_Dhun_Music_Mithila_Ke_Lok_Baja_Rasan_Chauki_256kbps.webm";
+  `${import.meta.env.BASE_URL}music/Sehnai_Dhun_Mangal_Dhun_Music_Mithila_Ke_Lok_Baja_Rasan_Chauki_256kbps.webm`;
 const invitationPdf = import.meta.env.VITE_INVITATION_PDF_URL || "";
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "6207398499";
 const wishesWhatsappNumber =
