@@ -627,7 +627,7 @@ function App() {
       </main>
 
       <footer className="footer">
-        <p>pay 50000 to mr harshit for website development fees</p>
+        <p>developed by harshit</p>
       </footer>
 
       {selectedPhoto ? (
