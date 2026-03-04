@@ -641,6 +641,7 @@ body[data-theme="dark"] .message-wall li {
 @media (max-width: 640px) {
   .topbar {
     padding: 0.65rem 0.75rem;
+    flex-wrap: nowrap;
   }
 
   .brand {
@@ -649,14 +650,15 @@ body[data-theme="dark"] .message-wall li {
   }
 
   .actions {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-end;
     gap: 0.4rem;
+    flex-wrap: nowrap;
   }
 
   .chip {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.78rem;
+    padding: 0.32rem 0.55rem;
+    font-size: 0.74rem;
   }
 }
 
