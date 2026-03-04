@@ -410,7 +410,7 @@ function App() {
             </article>
             <article className="glass-card">
               <h3>Contact Person</h3>
-              <p>Pappu Ji: +91 123456789</p>
+              <p>Pappu Ji: 0123456789</p>
             </article>
           </div>
         </section>
