@@ -421,7 +421,7 @@ function App() {
               <ul>
                 <li>Nearest Railway Station: Darbhanga Junction (5.8 km)</li>
                 <li>Nearest Airport: Darbhanga Airport (8.1 km)</li>
-                <li>Landmark: Heritage Lake Promenade</li>
+                <li>Landmark: To be updated</li>
               </ul>
             </article>
             <div className="map-frame">
