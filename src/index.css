@@ -70,7 +70,7 @@ body[data-theme="dark"] {
   right: 0;
   z-index: 30;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   gap: 0.45rem;
@@ -89,20 +89,30 @@ body[data-theme="dark"] .topbar {
   font-weight: 700;
   letter-spacing: 0.05em;
   margin: 0;
+  white-space: nowrap;
 }
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.actions::-webkit-scrollbar {
+  display: none;
 }
 
 .language-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding-right: 0.6rem;
+  gap: 0;
+  padding: 0.35rem 0.58rem;
+  min-width: 88px;
+  height: 34px;
+  box-sizing: border-box;
 }
 
 .language-select {
@@ -113,9 +123,11 @@ body[data-theme="dark"] .topbar {
   font-size: 0.8rem;
   line-height: 1;
   padding: 0;
-  min-width: 78px;
+  min-width: 0;
+  width: 100%;
   outline: none;
   cursor: pointer;
+  text-align: center;
 }
 
 .language-select option {
@@ -264,6 +276,72 @@ body:not([data-theme="dark"]) .notify-bell-icon {
     0 0 0 1px rgba(255, 255, 255, 0.45),
     0 0 12px rgba(255, 255, 255, 0.95);
   animation: notify-pulse 1.8s ease-in-out infinite;
+}
+
+.chip-alerts {
+  position: relative;
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+
+.chip-alerts.is-active {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 0 10px rgba(255, 255, 255, 0.35);
+}
+
+.chip-bell-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.chip-home,
+.chip-theme-text,
+.chip-audio-text {
+  min-width: 76px;
+  height: 34px;
+  padding: 0.34rem 0.62rem;
+  white-space: nowrap;
+}
+
+.chip-theme-text {
+  gap: 0.24rem;
+}
+
+.chip-theme-text.is-dark {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.24),
+    0 0 12px rgba(214, 235, 255, 0.5);
+}
+
+.mode-moon {
+  line-height: 1;
+}
+
+.flower-drop-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.flower-drop {
+  position: absolute;
+  top: -60px;
+  opacity: 0;
+  animation-name: flower-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  transform: translateX(0) rotate(0deg);
+  will-change: transform, opacity;
+}
+
+.flower-drop img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .btn {
@@ -1038,8 +1116,7 @@ body[data-theme="dark"] .quick-nav-toggle {
 }
 
 .chip-home {
-  padding: 0.22rem 0.52rem;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1360,12 +1437,23 @@ body[data-theme="dark"] .quick-nav-toggle {
   background: color-mix(in oklab, var(--gold), var(--maroon) 30%);
   color: #4a0f19;
   font-weight: 700;
-  min-width: 78px;
+  width: 40px;
+  min-width: 40px;
+  padding: 0.34rem;
+  display: inline-grid;
+  place-items: center;
+}
+
+.chat-voice-icon {
+  width: 17px;
+  height: 17px;
+  display: block;
 }
 
 .chat-voice-btn.is-listening {
   background: #8b1e35;
   color: #fff;
+  box-shadow: 0 0 0 2px rgba(201, 77, 102, 0.24);
 }
 
 body[data-theme="dark"] .chat-widget {
@@ -1493,12 +1581,39 @@ body[data-theme="dark"] .chat-input input::placeholder {
     justify-content: flex-end;
     gap: 0.4rem;
     flex-wrap: nowrap;
+    max-width: 64vw;
   }
 
   .chip {
     height: 28px;
     padding: 0.3rem 0.46rem;
     font-size: 0.72rem;
+  }
+
+  .chip-home,
+  .chip-theme-text,
+  .chip-audio-text {
+    min-width: 62px;
+    height: 28px;
+    padding: 0.26rem 0.42rem;
+    font-size: 0.68rem;
+  }
+
+  .language-chip {
+    min-width: 76px;
+    height: 28px;
+    padding: 0.2rem 0.45rem;
+  }
+
+  .chip-alerts {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+
+  .chip-bell-icon {
+    width: 14px;
+    height: 14px;
   }
 
   .chip-icon-btn {
@@ -1576,7 +1691,7 @@ body[data-theme="dark"] .chat-input input::placeholder {
   }
 
   .language-chip {
-    gap: 0.2rem;
+    gap: 0;
     padding-right: 0.45rem;
   }
 
@@ -1738,6 +1853,23 @@ body[data-theme="dark"] .chat-input input::placeholder {
   40% {
     transform: translateY(-3px);
     opacity: 1;
+  }
+}
+
+@keyframes flower-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) rotate(var(--flower-rotate, 0deg));
+  }
+  8% {
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(var(--flower-sway, 24px), 52vh, 0) rotate(calc(var(--flower-rotate, 0deg) + 150deg));
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--flower-sway, 24px) * -1), 105vh, 0) rotate(calc(var(--flower-rotate, 0deg) + 330deg));
   }
 }
 

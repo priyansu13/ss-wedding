@@ -10,6 +10,7 @@ const mapsEmbedUrl =
 const shehnaiSrc =
   import.meta.env.VITE_SHEHNAI_AUDIO_URL ||
   `${import.meta.env.BASE_URL}music/Sehnai_Dhun_Mangal_Dhun_Music_Mithila_Ke_Lok_Baja_Rasan_Chauki_256kbps.webm`;
+const flowerImageSrc = `${import.meta.env.BASE_URL}images/images-removebg-preview.png`;
 const invitationPdfRaw =
   import.meta.env.VITE_INVITATION_PDF_URL || "invitation.pdf";
 const invitationPdf = /^https?:\/\//i.test(invitationPdfRaw)
@@ -75,6 +76,7 @@ const translations = {
     languageEnglish: "English",
     darkMode: "Dark",
     lightMode: "Light",
+    alerts: "Alerts",
     playMusic: "Play",
     muteMusic: "Mute",
     musicToggleTitle: "Toggle shehnai music",
@@ -273,6 +275,7 @@ const translations = {
     languageEnglish: "अंग्रेज़ी",
     darkMode: "डार्क मोड",
     lightMode: "लाइट मोड",
+    alerts: "अलर्ट",
     playMusic: "संगीत चलाएं",
     muteMusic: "संगीत बंद करें",
     musicToggleTitle: "शहनाई संगीत चालू/बंद करें",
@@ -471,6 +474,7 @@ const translations = {
     languageEnglish: "अंग्रेजी",
     darkMode: "डार्क मोड",
     lightMode: "लाइट मोड",
+    alerts: "अलर्ट",
     playMusic: "संगीत चलाउ",
     muteMusic: "संगीत बन्न करू",
     musicToggleTitle: "शहनाई संगीत चालू/बन्न करू",
@@ -864,6 +868,7 @@ function App() {
   const [chatLoading, setChatLoading] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [chatListening, setChatListening] = useState(false);
+  const [flowerDrops, setFlowerDrops] = useState([]);
   const [chatPending, setChatPending] = useState(null);
   const [chatQuickActions, setChatQuickActions] = useState(false);
   const [chatVenueChoice, setChatVenueChoice] = useState(null);
@@ -884,6 +889,9 @@ function App() {
   const chatMessagesRef = useRef(null);
   const speechRecognitionRef = useRef(null);
   const sendChatMessageRef = useRef(null);
+  const flowerDropIdRef = useRef(0);
+  const flowerDropTimersRef = useRef([]);
+  const lastFlowerDropAtRef = useRef(0);
   const t = translations[language];
   const chat = chatbotText[language];
   const isHindi = language === "hi";
@@ -903,6 +911,8 @@ function App() {
   }, [darkMode]);
 
   useEffect(() => {
+    if (!chatOpen) return;
+    if (chatMessages.length) return;
     setChatMessages([
       {
         id: Date.now(),
@@ -910,12 +920,7 @@ function App() {
         text: chat.greeting,
       },
     ]);
-    setChatInput("");
-    setChatLoading(false);
-    setChatPending(null);
-    setChatQuickActions(false);
-    setChatVenueChoice(null);
-  }, [chat]);
+  }, [chatOpen, chat.greeting, chatMessages.length]);
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -981,6 +986,42 @@ function App() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const clearFlowerTimers = () => {
+      flowerDropTimersRef.current.forEach((timerId) => clearTimeout(timerId));
+      flowerDropTimersRef.current = [];
+    };
+
+    const launchFlowerDrop = () => {
+      const now = Date.now();
+      if (now - lastFlowerDropAtRef.current < 700) return;
+      lastFlowerDropAtRef.current = now;
+      const burstId = now + Math.random();
+      const petals = Array.from({ length: 12 }, (_, i) => ({
+        id: `${burstId}-${i}-${flowerDropIdRef.current++}`,
+        burstId,
+        left: Math.min(96, Math.max(4, Math.random() * 100)),
+        delayMs: Math.floor(Math.random() * 360),
+        durationMs: 2300 + Math.floor(Math.random() * 1300),
+        sizePx: 20 + Math.floor(Math.random() * 18),
+        rotateDeg: Math.floor(Math.random() * 360),
+        swayPx: 18 + Math.floor(Math.random() * 30),
+      }));
+      setFlowerDrops((prev) => [...prev, ...petals]);
+
+      const timerId = setTimeout(() => {
+        setFlowerDrops((prev) => prev.filter((item) => item.burstId !== burstId));
+      }, 4300);
+      flowerDropTimersRef.current.push(timerId);
+    };
+
+    window.addEventListener("click", launchFlowerDrop, { passive: true });
+    return () => {
+      window.removeEventListener("click", launchFlowerDrop);
+      clearFlowerTimers();
+    };
   }, []);
 
   useEffect(() => {
@@ -1794,11 +1835,8 @@ function App() {
     window.alert("TBD");
   }
 
-  function closeChatAndRefresh() {
+  function closeChat() {
     setChatOpen(false);
-    setTimeout(() => {
-      window.location.reload();
-    }, 140);
   }
 
   return (
@@ -1813,18 +1851,11 @@ function App() {
         <p className="brand">{t.brand}</p>
         <div className="actions">
           {showHomeShortcut ? (
-            <button type="button" className="chip chip-home chip-icon-btn" onClick={() => jumpToSection("hero")}>
-              <svg viewBox="0 0 24 24" className="chip-icon-svg" aria-hidden="true">
-                <path
-                  d="M12 4.7 4.7 11a.75.75 0 1 0 .98 1.12l.82-.72V18a1 1 0 0 0 1 1h3.4a.75.75 0 0 0 .75-.75V14h1.7v4.25a.75.75 0 0 0 .75.75h3.4a1 1 0 0 0 1-1v-6.6l.82.72A.75.75 0 1 0 19.3 11L12 4.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-              <span className="chip-label">{t.navHome}</span>
+            <button type="button" className="chip chip-home" onClick={() => jumpToSection("hero")}>
+              {t.navHome}
             </button>
           ) : null}
           <label className="chip language-chip" htmlFor="language-select">
-            {language !== "en" ? <span>{t.language}</span> : null}
             <select
               className="language-select"
               id="language-select"
@@ -1836,46 +1867,26 @@ function App() {
               <option value="en">{t.languageEnglish}</option>
             </select>
           </label>
-          <button onClick={() => setDarkMode((v) => !v)} className="chip chip-icon-btn chip-theme">
-            {!darkMode ? (
-              <img
-                src={`${import.meta.env.BASE_URL}images/sun_6064515.png`}
-                alt=""
-                aria-hidden="true"
-                className="chip-icon-img theme-icon sun-icon"
-              />
-            ) : (
-              <img
-                src={`${import.meta.env.BASE_URL}images/moon_5365362.png`}
-                alt=""
-                aria-hidden="true"
-                className="chip-icon-img theme-icon moon-icon"
-              />
-            )}
-            <span className="chip-label">{darkMode ? t.lightMode : t.darkMode}</span>
+          <button onClick={() => setDarkMode((v) => !v)} className={`chip chip-theme-text ${darkMode ? "is-dark" : ""}`}>
+            {darkMode ? <span className="mode-moon" aria-hidden="true">🌙</span> : null}
+            <span>{darkMode ? t.lightMode : t.darkMode}</span>
           </button>
           <button
             onClick={() => setAudioOn((v) => !v)}
-            className="chip chip-icon-btn chip-audio"
+            className="chip chip-audio-text"
             disabled={!shehnaiSrc}
             title={shehnaiSrc ? t.musicToggleTitle : t.musicMissingTitle}
           >
-            <img
-              src={`${import.meta.env.BASE_URL}images/itunes_1384029.png`}
-              alt=""
-              aria-hidden="true"
-              className={`chip-icon-img music-icon ${audioOn ? "music-on" : "music-off"}`}
-            />
-            <span className="chip-label">{audioOn ? t.muteMusic : t.playMusic}</span>
+            {audioOn ? t.muteMusic : t.playMusic}
           </button>
           <button
             type="button"
-            className={`notify-bell ${notificationPermission === "granted" ? "is-active" : ""}`}
+            className={`chip chip-alerts ${notificationPermission === "granted" ? "is-active" : ""}`}
             onClick={handleEnableBrowserAlerts}
             aria-label={t.updatesEnableBrowser}
             title={t.updatesEnableBrowser}
           >
-            <svg viewBox="0 0 24 24" className="notify-bell-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" className="chip-bell-icon" aria-hidden="true">
               <path
                 d="M12 3.5a5 5 0 0 0-5 5v2.8c0 .95-.33 1.88-.93 2.62l-1.15 1.4c-.72.88-.1 2.18 1.04 2.18h12.08c1.14 0 1.76-1.3 1.04-2.18l-1.15-1.4a4.16 4.16 0 0 1-.93-2.62V8.5a5 5 0 0 0-5-5Z"
                 fill="currentColor"
@@ -2247,12 +2258,32 @@ function App() {
 
       <footer className="footer" aria-hidden="true" />
 
+      <div className="flower-drop-layer" aria-hidden="true">
+        {flowerDrops.map((flower) => (
+          <span
+            key={flower.id}
+            className="flower-drop"
+            style={{
+              left: `${flower.left}%`,
+              animationDelay: `${flower.delayMs}ms`,
+              animationDuration: `${flower.durationMs}ms`,
+              width: `${flower.sizePx}px`,
+              height: `${flower.sizePx}px`,
+              "--flower-rotate": `${flower.rotateDeg}deg`,
+              "--flower-sway": `${flower.swayPx}px`,
+            }}
+          >
+            <img src={flowerImageSrc} alt="" />
+          </span>
+        ))}
+      </div>
+
       <button
         type="button"
         className="chat-fab"
         onClick={() => {
           if (chatOpen) {
-            closeChatAndRefresh();
+            closeChat();
             return;
           }
           setChatOpen(true);
@@ -2276,7 +2307,7 @@ function App() {
               <strong>{chat.title}</strong>
               <span>{chat.subtitle}</span>
             </div>
-            <button type="button" className="chat-close" onClick={closeChatAndRefresh} aria-label={t.close}>
+            <button type="button" className="chat-close" onClick={closeChat} aria-label={t.close}>
               ×
             </button>
           </header>
@@ -2388,7 +2419,12 @@ function App() {
               title={chatListening ? chat.voiceStop : chat.voiceAsk}
               aria-label={chatListening ? chat.voiceStop : chat.voiceAsk}
             >
-              {chatListening ? chat.voiceListening : chat.voiceAsk}
+              <svg viewBox="0 0 24 24" className="chat-voice-icon" aria-hidden="true">
+                <path
+                  d="M12 3.2a3.2 3.2 0 0 0-3.2 3.2v5.2a3.2 3.2 0 1 0 6.4 0V6.4A3.2 3.2 0 0 0 12 3.2Zm-5.6 8.1a.8.8 0 0 1 .8.8 4.8 4.8 0 1 0 9.6 0 .8.8 0 1 1 1.6 0 6.4 6.4 0 0 1-5.6 6.35v1.35h2.2a.8.8 0 1 1 0 1.6H9a.8.8 0 1 1 0-1.6h2.2v-1.35a6.4 6.4 0 0 1-5.6-6.35.8.8 0 0 1 .8-.8Z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
             <button type="submit">{chat.send}</button>
           </form>
