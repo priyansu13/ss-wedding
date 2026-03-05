@@ -237,6 +237,11 @@ main {
   color: #fff;
 }
 
+.hero h1.hero-title-compact {
+  font-size: clamp(1.9rem, 6.2vw, 3.8rem);
+  line-height: 1.12;
+}
+
 .shimmer {
   background: linear-gradient(90deg, #f8dda3 15%, #fff7da 45%, #d4af37 70%, #f8dda3 90%);
   background-size: 280% auto;
@@ -778,6 +783,12 @@ body[data-theme="dark"] .message-wall li {
 .chat-user {
   background: color-mix(in oklab, var(--gold), transparent 65%);
   justify-self: end;
+}
+
+.chat-messages a {
+  color: color-mix(in oklab, var(--maroon), black 10%);
+  text-decoration: underline;
+  word-break: break-all;
 }
 
 .chat-typing {

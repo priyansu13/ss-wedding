@@ -657,6 +657,9 @@ function App() {
   const audioRef = useRef(null);
   const t = translations[language];
   const chat = chatbotText[language];
+  const isHindi = language === "hi";
+  const heroEyebrowText = isHindi ? "" : t.together;
+  const heroTitleText = isHindi ? "दोनों परिवारों के साथ" : t.couple;
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -1035,8 +1038,8 @@ function App() {
           <div className="hero-overlay" />
           <div className="royal-frame" />
           <div className="hero-content">
-            <p className="eyebrow">{t.together}</p>
-            <h1 className="shimmer">{t.couple}</h1>
+            <p className="eyebrow">{heroEyebrowText}</p>
+            <h1 className={`shimmer ${isHindi ? "hero-title-compact" : ""}`}>{heroTitleText}</h1>
             <p className="date-line">{t.dateLine}</p>
 
             <div className="mini-countdown">
