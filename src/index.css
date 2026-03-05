@@ -166,6 +166,18 @@ body[data-theme="dark"] .topbar {
   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
 }
 
+.notify-bell {
+  animation: bell-glow-light 2.4s ease-in-out infinite;
+}
+
+body[data-theme="dark"] .notify-bell {
+  animation: none;
+}
+
+body[data-theme="dark"] .notify-bell-icon {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
+}
+
 .notify-bell.is-active .notify-bell-icon {
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
 }
@@ -1616,6 +1628,16 @@ body[data-theme="dark"] .chat-input input::placeholder {
   50% {
     transform: scale(1.16);
     opacity: 1;
+  }
+}
+
+@keyframes bell-glow-light {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.55));
   }
 }
 

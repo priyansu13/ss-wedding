@@ -266,7 +266,7 @@ const translations = {
     updatesBrowserFallback: "New details are available on the invitation page.",
   },
   hi: {
-    brand: "Our Wedding Journal",
+    brand: "हमारी विवाह डायरी",
     language: "भाषा",
     languageHindi: "हिंदी",
     languageMaithili: "मैथिली",
@@ -464,7 +464,7 @@ const translations = {
     updatesBrowserFallback: "नए अपडेट देखने के लिए पेज खोलें।",
   },
   mai: {
-    brand: "Our Wedding Journal",
+    brand: "हमर बियाह डायरी",
     language: "भाषा",
     languageHindi: "हिंदी",
     languageMaithili: "मैथिली",
@@ -1550,7 +1550,11 @@ function App() {
           >
             <svg viewBox="0 0 24 24" className="notify-bell-icon" aria-hidden="true">
               <path
-                d="M12 4a4 4 0 0 0-4 4v2.4c0 .9-.3 1.8-.9 2.5L5.6 14.7A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .7-1.7l-1.5-1.8a4 4 0 0 1-.9-2.5V8a4 4 0 0 0-4-4Zm0 16a2.2 2.2 0 0 0 2.1-1.6h-4.2A2.2 2.2 0 0 0 12 20Z"
+                d="M12 3.5a5 5 0 0 0-5 5v2.8c0 .95-.33 1.88-.93 2.62l-1.15 1.4c-.72.88-.1 2.18 1.04 2.18h12.08c1.14 0 1.76-1.3 1.04-2.18l-1.15-1.4a4.16 4.16 0 0 1-.93-2.62V8.5a5 5 0 0 0-5-5Z"
+                fill="currentColor"
+              />
+              <path
+                d="M9.85 19a2.15 2.15 0 0 0 4.3 0h-4.3Z"
                 fill="currentColor"
               />
             </svg>
