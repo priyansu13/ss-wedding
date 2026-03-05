@@ -900,7 +900,10 @@ function App() {
     } else if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
       reply = `- ${chat.askVenueType}`;
       setChatPending("venue");
-    } else if (has(["time", "date", "when", "कब", "समय", "तिथि"])) {
+    } else if (has(["time", "timing", "when", "कब", "समय"])) {
+      reply = `- ${chat.askTimingType}`;
+      setChatPending("timing");
+    } else if (has(["date", "तिथि", "दिनांक"])) {
       reply = `- ${chat.askTimingType}`;
       setChatPending("timing");
     } else {
