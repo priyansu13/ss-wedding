@@ -93,6 +93,30 @@ body[data-theme="dark"] {
   gap: 0.5rem;
 }
 
+.language-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-right: 0.6rem;
+}
+
+.language-select {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0;
+  min-width: 78px;
+  outline: none;
+  cursor: pointer;
+}
+
+.language-select option {
+  color: #2a0f11;
+}
+
 .chip,
 .btn {
   border-radius: 999px;
@@ -590,8 +614,17 @@ body[data-theme="dark"] .message-wall li {
 }
 
 .footer {
-  text-align: center;
-  padding: 2.2rem 1rem 3.5rem;
+  min-height: 160px;
+  margin-top: 2rem;
+  border-top: 2px solid color-mix(in oklab, var(--gold), transparent 45%);
+  background:
+    radial-gradient(circle at 12px 12px, color-mix(in oklab, var(--maroon), white 8%) 0 8px, transparent 8px),
+    radial-gradient(circle at 36px 36px, color-mix(in oklab, var(--gold), white 8%) 0 6px, transparent 6px),
+    repeating-linear-gradient(45deg, color-mix(in oklab, var(--mustard), white 20%) 0 8px, transparent 8px 16px),
+    repeating-linear-gradient(-45deg, color-mix(in oklab, var(--lotus), white 10%) 0 10px, transparent 10px 20px),
+    linear-gradient(180deg, color-mix(in oklab, var(--cream), var(--gold) 12%), color-mix(in oklab, var(--cream), var(--maroon) 10%));
+  background-size: 48px 48px, 48px 48px, 64px 64px, 72px 72px, 100% 100%;
+  box-shadow: inset 0 14px 24px rgba(118, 42, 30, 0.12);
 }
 
 .lightbox {
@@ -659,6 +692,16 @@ body[data-theme="dark"] .message-wall li {
   .chip {
     padding: 0.32rem 0.55rem;
     font-size: 0.74rem;
+  }
+
+  .language-chip {
+    gap: 0.2rem;
+    padding-right: 0.45rem;
+  }
+
+  .language-select {
+    min-width: 68px;
+    font-size: 0.72rem;
   }
 }
 

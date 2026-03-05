@@ -379,13 +379,13 @@ function App() {
       <header className="topbar">
         <p className="brand">{t.brand}</p>
         <div className="actions">
-          <label className="chip" htmlFor="language-select">
-            {t.language}
+          <label className="chip language-chip" htmlFor="language-select">
+            <span>{t.language}</span>
             <select
+              className="language-select"
               id="language-select"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              style={{ marginLeft: "0.5rem", background: "transparent", color: "inherit", border: "none" }}
             >
               <option value="hi">Hindi</option>
               <option value="mai">Maithili</option>
@@ -747,13 +747,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="footer">
-<<<<<<< HEAD
-        <p></p>
-=======
-        <p>{t.footer}</p>
->>>>>>> 0e6e880 (Update invite: Saurabh name, remove developer credit, add language selector, and multi-select ceremony)
-      </footer>
+      <footer className="footer" aria-hidden="true" />
 
       {selectedPhoto ? (
         <div className="lightbox" role="dialog" aria-modal="true" onClick={() => setSelectedPhoto(null)}>
