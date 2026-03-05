@@ -1146,11 +1146,11 @@ function App() {
     }
 
     if (asksShagunMap) {
-      return points([`${t.shagunTitle}: ${t.shagunVenue}`, `${t.openMaps}: ${shagunMapLink}`]);
+      return shagunMapLink;
     }
 
     if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
-      return points([`${t.venueTitle}: ${t.venueName}, ${t.venueAddress}`, t.openMaps]);
+      return weddingMapLink;
     }
 
     if (has(["time", "date", "when", "कब", "समय", "तिथि"])) {
@@ -1250,7 +1250,7 @@ function App() {
       const yesNo = getYesNoChoice(text);
       if (yesNo === "yes") {
         const link = chatVenueChoice === "shagun" ? shagunMapLink : weddingMapLink;
-        reply = `- ${t.openMaps}: ${link}`;
+        reply = link;
         setChatPending(null);
         setChatVenueChoice(null);
       } else if (yesNo === "no") {
@@ -1271,7 +1271,7 @@ function App() {
         reply = `- ${chat.chooseShagunWedding}`;
       }
     } else if (asksShagunMap) {
-      reply = `- ${t.shagunTitle}: ${t.shagunVenue}\n- ${t.openMaps}: ${shagunMapLink}`;
+      reply = shagunMapLink;
       setChatPending(null);
       setChatVenueChoice("shagun");
     } else if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
@@ -1364,6 +1364,8 @@ function App() {
                 target="_blank"
                 rel="noreferrer"
                 className={isMapsLink ? "chat-link-btn" : undefined}
+                aria-label={isMapsLink ? t.openMaps : undefined}
+                title={isMapsLink ? t.openMaps : undefined}
                 onClick={(e) => {
                   try {
                     const u = new URL(part);
@@ -1381,7 +1383,16 @@ function App() {
                   }
                 }}
               >
-                {label}
+                {isMapsLink ? (
+                  <svg viewBox="0 0 24 24" className="chat-link-icon" aria-hidden="true">
+                    <path
+                      d="M12 2a7 7 0 0 0-7 7c0 4.8 5.4 11.8 6.1 12.7a1.1 1.1 0 0 0 1.8 0C13.6 20.8 19 13.8 19 9a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                ) : (
+                  label
+                )}
               </a>
             );
           })}
@@ -1471,6 +1482,20 @@ function App() {
             title={shehnaiSrc ? t.musicToggleTitle : t.musicMissingTitle}
           >
             {audioOn ? t.muteMusic : t.playMusic}
+          </button>
+          <button
+            type="button"
+            className="chip chip-icon chip-notify"
+            onClick={handleEnableBrowserAlerts}
+            aria-label={t.updatesEnableBrowser}
+            title={t.updatesEnableBrowser}
+          >
+            <svg viewBox="0 0 24 24" className="chip-bell-icon" aria-hidden="true">
+              <path
+                d="M12 4a4 4 0 0 0-4 4v2.4c0 .9-.3 1.8-.9 2.5L5.6 14.7A1 1 0 0 0 6.3 16h11.4a1 1 0 0 0 .7-1.7l-1.5-1.8a4 4 0 0 1-.9-2.5V8a4 4 0 0 0-4-4Zm0 16a2.2 2.2 0 0 0 2.1-1.6h-4.2A2.2 2.2 0 0 0 12 20Z"
+                fill="currentColor"
+              />
+            </svg>
           </button>
         </div>
       </header>
@@ -1825,94 +1850,6 @@ function App() {
               </ul>
             </article>
           </div>
-          <article className="gold-card updates-card reveal">
-            <div className="updates-headline">
-              <h3>{t.updatesTitle}</h3>
-              {hasFreshUpdate ? <span className="updates-pill">New</span> : null}
-            </div>
-            <p className="section-subtitle updates-subtitle">{t.updatesSubtitle}</p>
-            <form className="updates-form" onSubmit={handleSaveUpdatePrefs}>
-              <label>
-                {t.updatesPhoneLabel}
-                <input
-                  pattern="[0-9+ ]{8,}"
-                  value={updatePrefs.phone}
-                  onChange={(e) => setUpdatePrefs((prev) => ({ ...prev, phone: e.target.value }))}
-                />
-              </label>
-              <fieldset className="updates-fieldset">
-                <legend>{t.updatesTopicsLabel}</legend>
-                <label className="updates-option">
-                  <input
-                    type="checkbox"
-                    checked={updatePrefs.topics.includes("venue")}
-                    onChange={() => toggleUpdateTopic("venue")}
-                  />
-                  <span>{t.updatesTopicVenue}</span>
-                </label>
-                <label className="updates-option">
-                  <input
-                    type="checkbox"
-                    checked={updatePrefs.topics.includes("timing")}
-                    onChange={() => toggleUpdateTopic("timing")}
-                  />
-                  <span>{t.updatesTopicTiming}</span>
-                </label>
-                <label className="updates-option">
-                  <input
-                    type="checkbox"
-                    checked={updatePrefs.topics.includes("general")}
-                    onChange={() => toggleUpdateTopic("general")}
-                  />
-                  <span>{t.updatesTopicGeneral}</span>
-                </label>
-              </fieldset>
-              <fieldset className="updates-fieldset">
-                <legend>{t.updatesChannelLabel}</legend>
-                <label className="updates-option">
-                  <input
-                    type="checkbox"
-                    checked={updatePrefs.browser}
-                    onChange={(e) =>
-                      setUpdatePrefs((prev) => ({ ...prev, browser: e.target.checked }))
-                    }
-                  />
-                  <span>{t.updatesChannelBrowser}</span>
-                </label>
-                <label className="updates-option">
-                  <input
-                    type="checkbox"
-                    checked={updatePrefs.whatsapp}
-                    onChange={(e) =>
-                      setUpdatePrefs((prev) => ({ ...prev, whatsapp: e.target.checked }))
-                    }
-                  />
-                  <span>{t.updatesChannelWhatsapp}</span>
-                </label>
-              </fieldset>
-              <div className="form-actions">
-                <button type="button" className="btn btn-outline" onClick={handleEnableBrowserAlerts}>
-                  {t.updatesEnableBrowser}
-                </button>
-                <button className="btn" type="submit">
-                  {t.updatesSave}
-                </button>
-                {updatePrefs.whatsapp ? (
-                  <button type="button" className="btn btn-outline" onClick={handleWhatsappUpdates}>
-                    {t.updatesWhatsappCTA}
-                  </button>
-                ) : null}
-              </div>
-              {latestUpdate ? (
-                <p className="notice update-feed-line">
-                  {t.updatesLatestLabel}: {latestUpdate.headline || latestUpdate.details || latestUpdate.version}
-                </p>
-              ) : (
-                <p className="notice update-feed-line">{t.updatesNoFeed}</p>
-              )}
-              {updatesStatus ? <p className="notice">{updatesStatus}</p> : null}
-            </form>
-          </article>
         </section>
       </main>
 

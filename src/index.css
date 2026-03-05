@@ -135,6 +135,20 @@ body[data-theme="dark"] {
   cursor: not-allowed;
 }
 
+.chip-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+}
+
+.chip-bell-icon {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
 .btn {
   background: linear-gradient(135deg, #a92f35, var(--maroon));
 }
@@ -680,6 +694,14 @@ body[data-theme="dark"] .photo-card-hint {
   gap: 0.8rem;
 }
 
+.rsvp .gold-card {
+  background: rgba(255, 248, 231, 0.8);
+}
+
+body[data-theme="dark"] .rsvp .gold-card {
+  background: rgba(58, 17, 30, 0.76);
+}
+
 label {
   display: grid;
   gap: 0.4rem;
@@ -1075,19 +1097,26 @@ body[data-theme="dark"] .quick-nav-toggle {
 }
 
 .chat-link-btn {
-  display: inline-block;
+  display: inline-grid;
+  place-items: center;
   margin-top: 0.16rem;
   border: 1px solid color-mix(in oklab, var(--gold), transparent 12%);
-  border-radius: 999px;
-  padding: 0.28rem 0.58rem;
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   background: color-mix(in oklab, var(--cream), white 14%);
   color: #651025;
   text-decoration: none;
-  font-size: 0.74rem;
-  font-weight: 700;
   box-shadow:
     0 0 0 1px rgba(255, 240, 196, 0.35),
     0 0 18px rgba(212, 175, 55, 0.35);
+}
+
+.chat-link-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
 }
 
 .chat-typing {
@@ -1336,6 +1365,12 @@ body[data-theme="dark"] .chat-input input::placeholder {
   .chip {
     padding: 0.32rem 0.55rem;
     font-size: 0.74rem;
+  }
+
+  .chip-icon {
+    width: 31px;
+    height: 31px;
+    padding: 0;
   }
 
   .mini-countdown,
