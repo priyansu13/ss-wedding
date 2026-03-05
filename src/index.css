@@ -76,12 +76,12 @@ body[data-theme="dark"] {
   gap: 0.45rem;
   padding: 0.9rem 1rem;
   background: color-mix(in oklab, var(--cream), transparent 26%);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(1px);
   border-bottom: 1px solid color-mix(in oklab, var(--gold), transparent 70%);
 }
 
 body[data-theme="dark"] .topbar {
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(1px);
 }
 
 .brand {
@@ -283,8 +283,9 @@ main {
 }
 
 .hero h1.hero-title-compact {
-  font-size: clamp(1.9rem, 6.2vw, 3.8rem);
-  line-height: 1.12;
+  font-size: clamp(2.6rem, 8.4vw, 5.8rem);
+  line-height: 1.04;
+  margin-top: 1.5rem;
 }
 
 .shimmer {
@@ -373,7 +374,7 @@ main {
 .ritual-card {
   border-radius: 18px;
   border: 1px solid color-mix(in oklab, var(--gold), transparent 55%);
-  box-shadow: 0 8px 16px rgba(54, 18, 16, 0.1);
+  box-shadow: 0 3px 8px rgba(54, 18, 16, 0.08);
 }
 
 .timeline-card,
@@ -461,7 +462,7 @@ body[data-theme="dark"] .glass-card {
 .gold-card:hover,
 .ritual-card:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 16px rgba(54, 18, 16, 0.12);
+  box-shadow: 0 5px 10px rgba(54, 18, 16, 0.1);
 }
 
 .venue-grid {
