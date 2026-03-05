@@ -1,5 +1,5 @@
 ﻿
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const weddingDate = new Date("2026-04-26T19:00:00+05:30");
 const mapsEmbedUrl =
@@ -895,6 +895,34 @@ function App() {
   const flowerDropIdRef = useRef(0);
   const flowerDropTimersRef = useRef([]);
   const lastFlowerDropAtRef = useRef(0);
+
+  const clearFlowerTimers = useCallback(() => {
+    flowerDropTimersRef.current.forEach((timerId) => clearTimeout(timerId));
+    flowerDropTimersRef.current = [];
+  }, []);
+
+  const launchFlowerDrop = useCallback(() => {
+    const now = Date.now();
+    if (now - lastFlowerDropAtRef.current < 700) return;
+    lastFlowerDropAtRef.current = now;
+    const burstId = now + Math.random();
+    const petals = Array.from({ length: 12 }, (_, i) => ({
+      id: `${burstId}-${i}-${flowerDropIdRef.current++}`,
+      burstId,
+      left: Math.min(96, Math.max(4, Math.random() * 100)),
+      delayMs: Math.floor(Math.random() * 360),
+      durationMs: 2300 + Math.floor(Math.random() * 1300),
+      sizePx: 20 + Math.floor(Math.random() * 18),
+      rotateDeg: Math.floor(Math.random() * 360),
+      swayPx: 18 + Math.floor(Math.random() * 30),
+    }));
+    setFlowerDrops((prev) => [...prev, ...petals]);
+
+    const timerId = setTimeout(() => {
+      setFlowerDrops((prev) => prev.filter((item) => item.burstId !== burstId));
+    }, 4300);
+    flowerDropTimersRef.current.push(timerId);
+  }, []);
   const t = translations[language];
   const chat = chatbotText[language];
   const isHindi = language === "hi";
@@ -991,41 +1019,7 @@ function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const clearFlowerTimers = () => {
-      flowerDropTimersRef.current.forEach((timerId) => clearTimeout(timerId));
-      flowerDropTimersRef.current = [];
-    };
-
-    const launchFlowerDrop = () => {
-      const now = Date.now();
-      if (now - lastFlowerDropAtRef.current < 700) return;
-      lastFlowerDropAtRef.current = now;
-      const burstId = now + Math.random();
-      const petals = Array.from({ length: 12 }, (_, i) => ({
-        id: `${burstId}-${i}-${flowerDropIdRef.current++}`,
-        burstId,
-        left: Math.min(96, Math.max(4, Math.random() * 100)),
-        delayMs: Math.floor(Math.random() * 360),
-        durationMs: 2300 + Math.floor(Math.random() * 1300),
-        sizePx: 20 + Math.floor(Math.random() * 18),
-        rotateDeg: Math.floor(Math.random() * 360),
-        swayPx: 18 + Math.floor(Math.random() * 30),
-      }));
-      setFlowerDrops((prev) => [...prev, ...petals]);
-
-      const timerId = setTimeout(() => {
-        setFlowerDrops((prev) => prev.filter((item) => item.burstId !== burstId));
-      }, 4300);
-      flowerDropTimersRef.current.push(timerId);
-    };
-
-    window.addEventListener("click", launchFlowerDrop, { passive: true });
-    return () => {
-      window.removeEventListener("click", launchFlowerDrop);
-      clearFlowerTimers();
-    };
-  }, []);
+  useEffect(() => () => clearFlowerTimers(), [clearFlowerTimers]);
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -1881,7 +1875,10 @@ function App() {
             <span>{darkMode ? t.lightMode : t.darkMode}</span>
           </button>
           <button
-            onClick={() => setAudioOn((v) => !v)}
+            onClick={() => {
+              setAudioOn((v) => !v);
+              launchFlowerDrop();
+            }}
             className="topbar-plain-btn chip-audio-text"
             disabled={!shehnaiSrc}
             title={shehnaiSrc ? t.musicToggleTitle : t.musicMissingTitle}
@@ -1937,7 +1934,7 @@ function App() {
             </div>
 
             <div className="hero-buttons">
-              <a className="btn" href="#rsvp">
+              <a className="btn" href="#rsvp" onClick={launchFlowerDrop}>
                 {t.acceptNow}
               </a>
               <a className="btn btn-outline" href={buildCalendarUrl(t)} target="_blank" rel="noreferrer">
