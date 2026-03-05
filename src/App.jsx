@@ -30,6 +30,8 @@ const localeByLanguage = {
   mai: "hi-IN",
 };
 
+const urlRegex = /(https?:\/\/[^\s]+)/gi;
+
 const translations = {
   en: {
     brand: "SS Wedding",
@@ -964,6 +966,26 @@ function App() {
     setChatInput("");
   }
 
+  function renderChatText(text) {
+    return text.split("\n").map((line, lineIndex) => {
+      const parts = line.split(urlRegex);
+      return (
+        <span key={`line-${lineIndex}`}>
+          {parts.map((part, i) =>
+            /^https?:\/\//i.test(part) ? (
+              <a key={`url-${lineIndex}-${i}`} href={part} target="_blank" rel="noreferrer">
+                {part}
+              </a>
+            ) : (
+              <span key={`txt-${lineIndex}-${i}`}>{part}</span>
+            )
+          )}
+          {lineIndex < text.split("\n").length - 1 ? <br /> : null}
+        </span>
+      );
+    });
+  }
+
   const whatsappLink = `https://wa.me/${whatsappNumberLink}?text=${encodeURIComponent(
     `${t.confirmMessagePrefix}: ${t.confirmMessageBody} ${t.languageNote}: ${language.toUpperCase()}. ${t.ceremonyNote}: ${selectedCeremonyText || t.notSelected}`
   )}`;
@@ -1370,7 +1392,7 @@ function App() {
           <div className="chat-messages">
             {chatMessages.map((item) => (
               <p key={item.id} className={item.sender === "user" ? "chat-user" : "chat-bot"}>
-                {item.text}
+                {renderChatText(item.text)}
               </p>
             ))}
             {chatLoading ? (
