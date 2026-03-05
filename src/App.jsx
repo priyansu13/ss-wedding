@@ -21,6 +21,14 @@ const wishesWhatsappNumber =
   import.meta.env.VITE_WISHES_WHATSAPP_NUMBER || "+91 7992371912";
 const weddingMapLink = "https://maps.google.com/?q=Madhubani%20Bihar";
 const shagunMapLink = "https://maps.google.com/?q=Putai%20Bihar";
+const galleryFolderLinks = {
+  grandEntry: "https://drive.google.com/drive/folders/19TjjIsKZkT5rnssreugnOnBPnM8pQJhI",
+  varmalaStage: "https://drive.google.com/drive/folders/1XloyehtZBt9o6tDYJoJeC4ARkYxEzZVS",
+  kohbarArt: "https://drive.google.com/drive/folders/1AuWQAUi1pU6luE_UzQQzg-xc1iN6hZmz",
+  sacredMandap: "https://drive.google.com/drive/folders/1RC3PxDFvFDu-aIx6DAeKacUZFaz9m232",
+  familyBlessings: "https://drive.google.com/drive/folders/1DdWNcNfn3XPWtQsNoPo6JWWbuukzBrrr",
+};
+const galleryUploadBaseUrl = import.meta.env.VITE_GALLERY_UPLOAD_URL || "";
 const whatsappNumberLink = whatsappNumber.replace(/\D/g, "");
 const wishesWhatsappNumberLink = wishesWhatsappNumber.replace(/\D/g, "");
 
@@ -146,11 +154,11 @@ const translations = {
     ],
     galleryTitle: "Wedding Gallery",
     gallery: [
-      { title: "Grand Entry", color: "from-maroon to-gold" },
-      { title: "Varmala Stage", color: "from-emerald to-gold" },
-      { title: "Kohbar Art", color: "from-lotus to-maroon" },
-      { title: "Sacred Mandap", color: "from-gold to-cream" },
-      { title: "Family Blessings", color: "from-emerald to-mustard" },
+      { key: "grandEntry", title: "Grand Entry", color: "from-maroon to-gold" },
+      { key: "varmalaStage", title: "Varmala Stage", color: "from-emerald to-gold" },
+      { key: "kohbarArt", title: "Kohbar Art", color: "from-lotus to-maroon" },
+      { key: "sacredMandap", title: "Sacred Mandap", color: "from-gold to-cream" },
+      { key: "familyBlessings", title: "Family Blessings", color: "from-emerald to-mustard" },
     ],
     rsvpTitle: "Confirmation and Blessings",
     fullName: "Full Name",
@@ -165,6 +173,8 @@ const translations = {
     rsvpThanks: "Thank you. Your response has been recorded.",
     downloadPdf: "Download Invitation PDF",
     enablePdf: "Set VITE_INVITATION_PDF_URL to enable PDF download.",
+    viewAlbum: "View Album",
+    uploadPhoto: "Upload Photo",
     messageWall: "Guest Message Wall",
     blessingPlaceholder: "Share your blessing...",
     postMessage: "Post Message",
@@ -305,11 +315,11 @@ const translations = {
     ],
     galleryTitle: "विवाह गैलरी",
     gallery: [
-      { title: "भव्य प्रवेश", color: "from-maroon to-gold" },
-      { title: "वरमाला मंच", color: "from-emerald to-gold" },
-      { title: "कोहबर कला", color: "from-lotus to-maroon" },
-      { title: "पवित्र मंडप", color: "from-gold to-cream" },
-      { title: "परिवार का आशीर्वाद", color: "from-emerald to-mustard" },
+      { key: "grandEntry", title: "भव्य प्रवेश", color: "from-maroon to-gold" },
+      { key: "varmalaStage", title: "वरमाला मंच", color: "from-emerald to-gold" },
+      { key: "kohbarArt", title: "कोहबर कला", color: "from-lotus to-maroon" },
+      { key: "sacredMandap", title: "पवित्र मंडप", color: "from-gold to-cream" },
+      { key: "familyBlessings", title: "परिवार का आशीर्वाद", color: "from-emerald to-mustard" },
     ],
     rsvpTitle: "पुष्टि और आशीर्वाद",
     fullName: "पूरा नाम",
@@ -324,6 +334,8 @@ const translations = {
     rsvpThanks: "धन्यवाद। आपका जवाब दर्ज कर लिया गया है।",
     downloadPdf: "निमंत्रण PDF डाउनलोड करें",
     enablePdf: "PDF डाउनलोड के लिए VITE_INVITATION_PDF_URL सेट करें।",
+    viewAlbum: "एल्बम देखें",
+    uploadPhoto: "फोटो अपलोड करें",
     messageWall: "अतिथि संदेश दीवार",
     blessingPlaceholder: "अपना आशीर्वाद लिखें...",
     postMessage: "संदेश भेजें",
@@ -464,11 +476,11 @@ const translations = {
     ],
     galleryTitle: "बियाह गैलरी",
     gallery: [
-      { title: "भव्य प्रवेश", color: "from-maroon to-gold" },
-      { title: "वरमाला मंच", color: "from-emerald to-gold" },
-      { title: "कोहबर कला", color: "from-lotus to-maroon" },
-      { title: "पवित्र मंडप", color: "from-gold to-cream" },
-      { title: "परिवारक आशीर्वाद", color: "from-emerald to-mustard" },
+      { key: "grandEntry", title: "भव्य प्रवेश", color: "from-maroon to-gold" },
+      { key: "varmalaStage", title: "वरमाला मंच", color: "from-emerald to-gold" },
+      { key: "kohbarArt", title: "कोहबर कला", color: "from-lotus to-maroon" },
+      { key: "sacredMandap", title: "पवित्र मंडप", color: "from-gold to-cream" },
+      { key: "familyBlessings", title: "परिवारक आशीर्वाद", color: "from-emerald to-mustard" },
     ],
     rsvpTitle: "पुष्टि आ आशीर्वाद",
     fullName: "पूरा नाम",
@@ -483,6 +495,8 @@ const translations = {
     rsvpThanks: "धन्यवाद। अहाँक जवाब दर्ज भ' गेल।",
     downloadPdf: "निमंत्रण PDF डाउनलोड करू",
     enablePdf: "PDF डाउनलोड लेल VITE_INVITATION_PDF_URL सेट करू।",
+    viewAlbum: "एल्बम देखू",
+    uploadPhoto: "फोटो अपलोड करू",
     messageWall: "अतिथि संदेश दीवार",
     blessingPlaceholder: "अपन आशीर्वाद लिखू...",
     postMessage: "संदेश भेजू",
@@ -1052,6 +1066,11 @@ function App() {
 
   const countdownUnits = [t.days, t.hours, t.minutes, t.seconds];
   const isFinalDay = !countdown.ended && countdown.days === 0;
+  const selectedFolderLink = selectedPhoto ? galleryFolderLinks[selectedPhoto.key] : "";
+  const selectedUploadLink =
+    selectedPhoto && galleryUploadBaseUrl
+      ? galleryUploadBaseUrl
+      : selectedFolderLink;
 
   return (
     <>
@@ -1511,9 +1530,21 @@ function App() {
         <div className="lightbox" role="dialog" aria-modal="true" onClick={() => setSelectedPhoto(null)}>
           <div className={`lightbox-content ${selectedPhoto.color}`} onClick={(e) => e.stopPropagation()}>
             <h3>{selectedPhoto.title}</h3>
-            <button className="chip" type="button" onClick={() => setSelectedPhoto(null)}>
-              {t.close}
-            </button>
+            <div className="lightbox-actions">
+              {selectedFolderLink ? (
+                <a className="chip" href={selectedFolderLink} target="_blank" rel="noreferrer">
+                  {t.viewAlbum}
+                </a>
+              ) : null}
+              {selectedUploadLink ? (
+                <a className="chip" href={selectedUploadLink} target="_blank" rel="noreferrer">
+                  {t.uploadPhoto}
+                </a>
+              ) : null}
+              <button className="chip" type="button" onClick={() => setSelectedPhoto(null)}>
+                {t.close}
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

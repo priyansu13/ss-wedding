@@ -944,6 +944,13 @@ body[data-theme="dark"] .message-wall li {
   align-items: flex-start;
 }
 
+.lightbox-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .reveal {
   animation: fade-up 0.9s ease both;
 }
