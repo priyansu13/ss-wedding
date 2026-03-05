@@ -815,6 +815,7 @@ function App() {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatLoading, setChatLoading] = useState(false);
   const [chatPending, setChatPending] = useState(null);
+  const [chatQuickActions, setChatQuickActions] = useState(false);
   const [chatVenueChoice, setChatVenueChoice] = useState(null);
   const [quickNavOpen, setQuickNavOpen] = useState(false);
   const [showHomeShortcut, setShowHomeShortcut] = useState(false);
@@ -830,6 +831,7 @@ function App() {
   const [hasFreshUpdate, setHasFreshUpdate] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(getNotificationPermission);
   const audioRef = useRef(null);
+  const chatMessagesRef = useRef(null);
   const t = translations[language];
   const chat = chatbotText[language];
   const isHindi = language === "hi";
@@ -859,8 +861,16 @@ function App() {
     setChatInput("");
     setChatLoading(false);
     setChatPending(null);
+    setChatQuickActions(false);
     setChatVenueChoice(null);
   }, [chat]);
+
+  useEffect(() => {
+    if (!chatOpen) return;
+    const el = chatMessagesRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [chatMessages, chatLoading, chatOpen]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -1260,6 +1270,7 @@ function App() {
     const text = (customText ?? chatInput).trim();
     if (!text) return;
     if (chatLoading) return;
+    setChatQuickActions(false);
     const q = text.toLowerCase();
     const has = (words) => words.some((w) => q.includes(w));
     const asksShagunMap =
@@ -1351,10 +1362,12 @@ function App() {
     setChatLoading(true);
     const responseDelayMs = 900 + Math.floor(Math.random() * 500);
     setTimeout(() => {
+      const shouldShowQuickActions = reply === chat.fallback;
       setChatMessages((prev) => [
         ...prev,
         { id: Date.now() + 1, sender: "bot", text: reply },
       ]);
+      setChatQuickActions(shouldShowQuickActions);
       setChatLoading(false);
     }, responseDelayMs);
     setChatInput("");
@@ -1945,7 +1958,7 @@ function App() {
               ×
             </button>
           </header>
-          <div className="chat-messages">
+          <div className="chat-messages" ref={chatMessagesRef}>
             {chatMessages.map((item) => (
               <p key={item.id} className={item.sender === "user" ? "chat-user" : "chat-bot"}>
                 {renderChatText(item.text)}
@@ -1963,6 +1976,15 @@ function App() {
             <div className="chat-prompts">
               {chat.prompts.map((prompt) => (
                 <button key={prompt} type="button" onClick={() => sendChatMessage(prompt)}>
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          ) : null}
+          {chatQuickActions ? (
+            <div className="chat-prompts">
+              {chat.prompts.map((prompt) => (
+                <button key={`quick-${prompt}`} type="button" onClick={() => sendChatMessage(prompt)}>
                   {prompt}
                 </button>
               ))}
