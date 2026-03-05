@@ -147,6 +147,11 @@ body:not([data-theme="dark"]) .language-select {
   color: #fff;
 }
 
+body:not([data-theme="dark"]) .language-chip {
+  background: color-mix(in oklab, var(--maroon), transparent 16%);
+  border-color: color-mix(in oklab, var(--gold), transparent 46%);
+}
+
 body:not([data-theme="dark"]) .chip-theme-text,
 body:not([data-theme="dark"]) .chip-audio-text {
   color: var(--topbar-control-color);
