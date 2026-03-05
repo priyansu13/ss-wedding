@@ -78,11 +78,12 @@ body[data-theme="dark"] {
   background: color-mix(in oklab, var(--cream), transparent 26%);
   backdrop-filter: none;
   border-bottom: 1px solid color-mix(in oklab, var(--gold), transparent 70%);
-  --topbar-control-color: #fff;
+  --topbar-control-color: #f8e6bf;
 }
 
 body[data-theme="dark"] .topbar {
   backdrop-filter: none;
+  --topbar-control-color: #fff;
 }
 
 .brand {
@@ -135,6 +136,11 @@ body[data-theme="dark"] .topbar {
 
 body:not([data-theme="dark"]) .chip-theme-text,
 body:not([data-theme="dark"]) .chip-audio-text {
+  color: var(--topbar-control-color);
+}
+
+body:not([data-theme="dark"]) .topbar-plain-btn.chip-theme-text,
+body:not([data-theme="dark"]) .topbar-plain-btn.chip-audio-text {
   color: var(--topbar-control-color);
 }
 
