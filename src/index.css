@@ -638,12 +638,20 @@ body[data-theme="dark"] .message-wall li {
   z-index: 45;
   border: 0;
   border-radius: 999px;
-  padding: 0.55rem 0.9rem;
-  font: inherit;
-  color: #fff;
-  background: linear-gradient(135deg, #a92f35, var(--maroon));
-  box-shadow: 0 10px 22px rgba(128, 0, 32, 0.28);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
+}
+
+.chat-guide-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
+  box-shadow: none;
+  animation: guide-bob 2s ease-in-out infinite;
 }
 
 .chat-widget {
@@ -835,6 +843,16 @@ body[data-theme="dark"] .message-wall li {
     min-width: 68px;
     font-size: 0.72rem;
   }
+
+  .chat-fab {
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+
+  .chat-guide-img {
+    width: 62px;
+    height: 62px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -923,5 +941,15 @@ body[data-theme="dark"] .message-wall li {
   to {
     transform: translateY(220px) rotate(300deg);
     opacity: 0.2;
+  }
+}
+
+@keyframes guide-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
   }
 }
