@@ -532,6 +532,8 @@ const chatbotText = {
     weddingTiming: "Wedding: Sunday, April 26, 2026, 7:00 PM onwards",
     askLocationLink: "Do you want the location link? Reply yes or no.",
     yesNoHint: "Please reply with yes or no.",
+    askLanguageChoice:
+      "Choose language link:\n- Hindi: https://lang.local/hi\n- English: https://lang.local/en\n- Maithili: https://lang.local/mai\n- Or type language name.",
   },
   hi: {
     open: "मुझसे पूछें",
@@ -552,6 +554,8 @@ const chatbotText = {
     weddingTiming: "विवाह: रविवार, 26 अप्रैल 2026, शाम 7:00 बजे से",
     askLocationLink: "क्या आप स्थान लिंक चाहते हैं? हाँ या ना लिखें।",
     yesNoHint: "कृपया हाँ या ना में जवाब दें।",
+    askLanguageChoice:
+      "भाषा लिंक चुनें:\n- हिंदी: https://lang.local/hi\n- अंग्रेज़ी: https://lang.local/en\n- मैथिली: https://lang.local/mai\n- या भाषा का नाम लिखें।",
   },
   mai: {
     open: "हमसँ पुछू",
@@ -572,6 +576,8 @@ const chatbotText = {
     weddingTiming: "बियाह: रवि, 26 अप्रैल 2026, साँझ 7:00 बजे सँ",
     askLocationLink: "की अहाँ स्थान लिंक चाहैत छी? हँ वा नहि लिखू।",
     yesNoHint: "कृपया हँ वा नहि मे जवाब दिऔ।",
+    askLanguageChoice:
+      "भाषा लिंक चुनू:\n- हिंदी: https://lang.local/hi\n- अंग्रेजी: https://lang.local/en\n- मैथिली: https://lang.local/mai\n- वा भाषाक नाम लिखू।",
   },
 };
 
@@ -897,6 +903,14 @@ function App() {
     return null;
   }
 
+  function getLanguageChoice(raw) {
+    const q = raw.toLowerCase();
+    if (["hindi", "हिंदी", "हिन्दी", "hi"].some((w) => q.includes(w))) return "hi";
+    if (["english", "अंग्रेज़ी", "अंग्रेजी", "en"].some((w) => q.includes(w))) return "en";
+    if (["maithili", "मैथिली", "mai"].some((w) => q.includes(w))) return "mai";
+    return null;
+  }
+
   function sendChatMessage(customText) {
     const text = (customText ?? chatInput).trim();
     if (!text) return;
@@ -904,9 +918,19 @@ function App() {
     const q = text.toLowerCase();
     const has = (words) => words.some((w) => q.includes(w));
     const selectedEvent = getEventChoice(text);
+    const selectedLanguage = getLanguageChoice(text);
     let reply = "";
 
-    if (chatPending === "venue") {
+    if (chatPending === "language") {
+      if (selectedLanguage) {
+        setLanguage(selectedLanguage);
+        setChatPending(null);
+        setChatVenueChoice(null);
+        setChatInput("");
+        return;
+      }
+      reply = `- ${chat.askLanguageChoice}`;
+    } else if (chatPending === "venue") {
       if (selectedEvent === "shagun") {
         reply = `- ${t.shagunTitle}: ${t.shagunVenue}\n- ${chat.askLocationLink}`;
         setChatPending("locationLink");
@@ -951,6 +975,15 @@ function App() {
     } else if (has(["date", "तिथि", "दिनांक"])) {
       reply = `- ${chat.askTimingType}`;
       setChatPending("timing");
+    } else if (has(["language", "हिंदी", "हिन्दी", "english", "अंग्रेज़ी", "अंग्रेजी", "maithili", "मैथिली", "भाषा"])) {
+      reply = `- ${chat.askLanguageChoice}`;
+      setChatPending("language");
+    } else if (selectedLanguage) {
+      setLanguage(selectedLanguage);
+      setChatPending(null);
+      setChatVenueChoice(null);
+      setChatInput("");
+      return;
     } else {
       reply = getBotReply(text);
       setChatPending(null);
@@ -976,7 +1009,28 @@ function App() {
         <span key={`line-${lineIndex}`}>
           {parts.map((part, i) =>
             /^https?:\/\//i.test(part) ? (
-              <a key={`url-${lineIndex}-${i}`} href={part} target="_blank" rel="noreferrer">
+              <a
+                key={`url-${lineIndex}-${i}`}
+                href={part}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => {
+                  try {
+                    const u = new URL(part);
+                    if (u.hostname === "lang.local") {
+                      e.preventDefault();
+                      const code = u.pathname.replace("/", "");
+                      if (["hi", "en", "mai"].includes(code)) {
+                        setLanguage(code);
+                        setChatPending(null);
+                        setChatVenueChoice(null);
+                      }
+                    }
+                  } catch {
+                    // ignore invalid URL and allow default navigation
+                  }
+                }}
+              >
                 {part}
               </a>
             ) : (
