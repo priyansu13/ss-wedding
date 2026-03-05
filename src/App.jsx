@@ -673,7 +673,7 @@ const chatbotText = {
     greeting:
       "Hello. I can assist you with venue details, timings, confirmation, weather, contact, and language options.",
     fallback:
-      "I could not match that request. Please ask about venue, timing, confirmation, dress code, contact, weather, or language.",
+      "I’m sorry, I don’t have an answer for that. I am currently only trained on the details for Saurabh and Soni’s wedding.\nWould you like to check the venue location or provide your Confirmation for the event?",
     prompts: ["Venue", "Timing", "Confirmation", "Contact"],
     ConfirmationHint:
       "Please fill the Confirmation form and click Confirm Now to send your details on WhatsApp.",
@@ -697,7 +697,7 @@ const chatbotText = {
     greeting:
       "नमस्ते। मैं स्थान, समय, पुष्टि, मौसम, संपर्क और भाषा विकल्प की जानकारी पेशेवर तरीके से दे सकता हूँ।",
     fallback:
-      "क्षमा करें, मैं इस अनुरोध को समझ नहीं पाया। कृपया स्थान, समय, पुष्टि, वेशभूषा, संपर्क, मौसम या भाषा के बारे में पूछें।",
+      "क्षमा करें, मुझे इस बारे में जानकारी नहीं है। अभी मेरा पूरा ध्यान सौरभ और सोनी की शादी की तैयारियों पर है।\nक्या मैं आपकी मदद वेन्यू (Venue) बताने में या आपकी Confirmation (स्वीकृति) दर्ज करने में कर सकता हूँ?",
     prompts: ["स्थान", "समय", "पुष्टि", "संपर्क"],
     ConfirmationHint:
       "कृपया पुष्टि फॉर्म भरें और WhatsApp पर विवरण भेजने के लिए Confirm Now दबाएँ।",
@@ -721,7 +721,7 @@ const chatbotText = {
     greeting:
       "नमस्कार। हम स्थान, समय, पुष्टि, मौसम, संपर्क आ भाषा विकल्पक जानकारी स्पष्ट रूप सँ देबामे मदद कऽ सकैत छी।",
     fallback:
-      "क्षमा करू, ई अनुरोध स्पष्ट नहि बुझायल। कृपया स्थान, समय, पुष्टि, पोशाक, संपर्क, मौसम वा भाषा पर पुछू।",
+      "क्षम्य होब, हमरा एहि बारे में नहि पता अछि। हमर काज अछि अहाँ सभ कें सौरभ आ सोनी क विवाहक जानकारी देब।\nकी अहाँ अपन Confirmation (स्वीकृति) देबय चाहब, या कार्यक्रमक समय जानय चाहब?",
     prompts: ["स्थान", "समय", "पुष्टि", "संपर्क"],
     ConfirmationHint:
       "कृपया पुष्टि फॉर्म भरू आ WhatsApp पर विवरण भेजबाक लेल Confirm Now दबाउ।",
@@ -1227,15 +1227,7 @@ function App() {
       return points([`${t.language}: ${t.languageHindi}, ${t.languageMaithili}, ${t.languageEnglish}`]);
     }
 
-    return points([
-      `${t.couple}`,
-      `${t.dateLine}`,
-      `${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`,
-      `${t.venueTitle}: ${t.venueName}, ${t.venueAddress}`,
-      `${t.contactTitle}: ${t.contactValue}`,
-      `${t.dressCodeLabel}: ${t.shagunDress}`,
-      chat.ConfirmationHint,
-    ]);
+    return chat.fallback;
   }
 
   function getEventChoice(raw) {
