@@ -1051,6 +1051,7 @@ function App() {
   )}`;
 
   const countdownUnits = [t.days, t.hours, t.minutes, t.seconds];
+  const isFinalDay = !countdown.ended && countdown.days === 0;
 
   return (
     <>
@@ -1270,7 +1271,12 @@ function App() {
 
         <section className="section celebration" id="countdown">
           <h2>{t.countdownTitle}</h2>
-          <div className="big-counter">
+          {isFinalDay ? (
+            <div className="final-day-banner" role="status" aria-live="polite">
+              FINAL 24 HOURS
+            </div>
+          ) : null}
+          <div className={`big-counter ${isFinalDay ? "big-counter-final" : ""}`}>
             {[
               countdown.days,
               countdown.hours,
@@ -1283,6 +1289,7 @@ function App() {
               </article>
             ))}
           </div>
+          {isFinalDay ? <div className="final-sparks" aria-hidden="true" /> : null}
 
           {countdown.ended ? (
             <div className="celebrate-box">
