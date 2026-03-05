@@ -140,7 +140,7 @@ function getWeatherLabel(code) {
 function buildCalendarUrl() {
   const start = "20260427T133000Z";
   const end = "20260427T183000Z";
-  const text = encodeURIComponent("Wedding of Sanu & Soni");
+  const text = encodeURIComponent("Wedding of Saurabh & Soni");
   const details = encodeURIComponent(
     "With blessings of both families, join us for a Mithilanchal wedding celebration."
   );
@@ -154,7 +154,7 @@ const initialRsvp = {
   name: "",
   phone: "",
   attendees: "2",
-  event: "Wedding Night",
+  ceremonies: ["Wedding Night"],
 };
 
 const initialWeather = {
@@ -165,10 +165,86 @@ const initialWeather = {
   aqi: null,
 };
 
+const translations = {
+  en: {
+    brand: "SS Wedding",
+    language: "Language",
+    together: "Together with their families",
+    couple: "Saurabh & Soni",
+    dateLine: "Monday, April 27, 2026 | Madhubani, Bihar",
+    acceptNow: "Accept Now",
+    addToCalendar: "Add to Calendar",
+    rsvpTitle: "Confirmation and Blessings",
+    fullName: "Full Name",
+    phone: "Phone Number",
+    guests: "Number of Guests",
+    ceremony: "Ceremony",
+    shagunCeremony: "Shagun Ceremony",
+    weddingNight: "Wedding Night",
+    confirmNow: "Confirm Now",
+    whatsappConfirm: "WhatsApp Confirm",
+    rsvpThanks: "Thank you. Your RSVP has been recorded.",
+    messageWall: "Guest Message Wall",
+    blessingPlaceholder: "Share your blessing...",
+    postMessage: "Post Message",
+    firstBlessing: "Be the first to bless the couple.",
+    footer: "With blessings from both families",
+  },
+  hi: {
+    brand: "एसएस विवाह",
+    language: "भाषा",
+    together: "दोनों परिवारों के साथ",
+    couple: "सौरभ और सोनी",
+    dateLine: "सोमवार, 27 अप्रैल 2026 | मधुबनी, बिहार",
+    acceptNow: "अभी स्वीकार करें",
+    addToCalendar: "कैलेंडर में जोड़ें",
+    rsvpTitle: "पुष्टि और आशीर्वाद",
+    fullName: "पूरा नाम",
+    phone: "फोन नंबर",
+    guests: "मेहमानों की संख्या",
+    ceremony: "समारोह",
+    shagunCeremony: "शगुन समारोह",
+    weddingNight: "विवाह रात्रि",
+    confirmNow: "अभी पुष्टि करें",
+    whatsappConfirm: "व्हाट्सऐप पुष्टि",
+    rsvpThanks: "धन्यवाद। आपकी उपस्थिति दर्ज कर ली गई है।",
+    messageWall: "अतिथि संदेश दीवार",
+    blessingPlaceholder: "अपना आशीर्वाद लिखें...",
+    postMessage: "संदेश भेजें",
+    firstBlessing: "सबसे पहले आशीर्वाद दें।",
+    footer: "दोनों परिवारों की ओर से सादर",
+  },
+  mai: {
+    brand: "एसएस बियाह",
+    language: "भाषा",
+    together: "दूनू परिवारक संग",
+    couple: "सौरभ आ सोनी",
+    dateLine: "सोम, 27 अप्रैल 2026 | मधुबनी, बिहार",
+    acceptNow: "एखन स्वीकार करू",
+    addToCalendar: "कैलेंडर मे जोड़ू",
+    rsvpTitle: "पुष्टि आ आशीर्वाद",
+    fullName: "पूरा नाम",
+    phone: "फोन नंबर",
+    guests: "मेहमानक संख्या",
+    ceremony: "समारोह",
+    shagunCeremony: "शगुन समारोह",
+    weddingNight: "बियाह राइत",
+    confirmNow: "एखन पुष्टि करू",
+    whatsappConfirm: "व्हाट्सऐप पुष्टि",
+    rsvpThanks: "धन्यवाद। अहाँक उपस्थिति दर्ज भ' गेल।",
+    messageWall: "अतिथि संदेश दीवार",
+    blessingPlaceholder: "अपन आशीर्वाद लिखू...",
+    postMessage: "संदेश भेजू",
+    firstBlessing: "सभसँ पहिने आशीर्वाद दिऔ।",
+    footer: "दूनू परिवारक तरफसँ सादर",
+  },
+};
+
 function App() {
   const [countdown, setCountdown] = useState(getTimeParts(weddingDate));
   const [darkMode, setDarkMode] = useState(false);
   const [audioOn, setAudioOn] = useState(false);
+  const [language, setLanguage] = useState("en");
   const [weather, setWeather] = useState(initialWeather);
   const [rsvp, setRsvp] = useState(initialRsvp);
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
@@ -176,6 +252,7 @@ function App() {
   const [messageInput, setMessageInput] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const audioRef = useRef(null);
+  const t = translations[language];
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -258,7 +335,7 @@ function App() {
   function handleRsvpSubmit(event) {
     event.preventDefault();
 
-    if (!rsvp.name.trim() || !rsvp.phone.trim()) {
+    if (!rsvp.name.trim() || !rsvp.phone.trim() || !rsvp.ceremonies.length) {
       return;
     }
 
@@ -286,7 +363,9 @@ function App() {
   }
 
   const whatsappLink = `https://wa.me/${whatsappNumberLink}?text=${encodeURIComponent(
-    "Graciously Confirm: I would like to confirm my presence for your wedding celebration."
+    `Graciously Confirm: I would like to confirm my presence for your wedding celebration. Language: ${language.toUpperCase()}. Ceremonies: ${rsvp.ceremonies.join(
+      ", "
+    ) || "Not selected"}`
   )}`;
 
   return (
@@ -298,8 +377,21 @@ function App() {
       </div>
 
       <header className="topbar">
-        <p className="brand">SS Wedding</p>
+        <p className="brand">{t.brand}</p>
         <div className="actions">
+          <label className="chip" htmlFor="language-select">
+            {t.language}
+            <select
+              id="language-select"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              style={{ marginLeft: "0.5rem", background: "transparent", color: "inherit", border: "none" }}
+            >
+              <option value="hi">Hindi</option>
+              <option value="mai">Maithili</option>
+              <option value="en">English</option>
+            </select>
+          </label>
           <button onClick={() => setDarkMode((v) => !v)} className="chip">
             {darkMode ? "Light Mode" : "Dark Mode"}
           </button>
@@ -323,9 +415,9 @@ function App() {
           <div className="hero-overlay" />
           <div className="royal-frame" />
           <div className="hero-content">
-            <p className="eyebrow">Together with their families</p>
-            <h1 className="shimmer">Sanu & Soni</h1>
-            <p className="date-line">Monday, April 27, 2026 | Madhubani, Bihar</p>
+            <p className="eyebrow">{t.together}</p>
+            <h1 className="shimmer">{t.couple}</h1>
+            <p className="date-line">{t.dateLine}</p>
 
             <div className="mini-countdown">
               {["days", "hours", "minutes", "seconds"].map((key) => (
@@ -338,10 +430,10 @@ function App() {
 
             <div className="hero-buttons">
               <a className="btn" href="#rsvp">
-                Accept Now
+                {t.acceptNow}
               </a>
               <a className="btn btn-outline" href={buildCalendarUrl()} target="_blank" rel="noreferrer">
-                Add to Calendar
+                {t.addToCalendar}
               </a>
             </div>
           </div>
@@ -547,11 +639,11 @@ function App() {
         </section>
 
         <section className="section rsvp" id="rsvp">
-          <h2>Confirmation and Blessings</h2>
+          <h2>{t.rsvpTitle}</h2>
           <div className="grid-two">
             <form className="gold-card" onSubmit={handleRsvpSubmit}>
               <label>
-                Full Name
+                {t.fullName}
                 <input
                   required
                   value={rsvp.name}
@@ -559,7 +651,7 @@ function App() {
                 />
               </label>
               <label>
-                Phone Number
+                {t.phone}
                 <input
                   required
                   pattern="[0-9+ ]{8,}"
@@ -568,7 +660,7 @@ function App() {
                 />
               </label>
               <label>
-                Number of Guests
+                {t.guests}
                 <select
                   value={rsvp.attendees}
                   onChange={(e) => setRsvp((prev) => ({ ...prev, attendees: e.target.value }))}
@@ -579,25 +671,48 @@ function App() {
                   <option>4+</option>
                 </select>
               </label>
-              <label>
-                Ceremony
-                <select
-                  value={rsvp.event}
-                  onChange={(e) => setRsvp((prev) => ({ ...prev, event: e.target.value }))}
-                >
-                  <option>Shagun Ceremony</option>
-                  <option>Wedding Night</option>
-                </select>
-              </label>
+              <fieldset>
+                <legend>{t.ceremony}</legend>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={rsvp.ceremonies.includes("Shagun Ceremony")}
+                    onChange={(e) =>
+                      setRsvp((prev) => ({
+                        ...prev,
+                        ceremonies: e.target.checked
+                          ? [...prev.ceremonies, "Shagun Ceremony"]
+                          : prev.ceremonies.filter((item) => item !== "Shagun Ceremony"),
+                      }))
+                    }
+                  />
+                  {t.shagunCeremony}
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={rsvp.ceremonies.includes("Wedding Night")}
+                    onChange={(e) =>
+                      setRsvp((prev) => ({
+                        ...prev,
+                        ceremonies: e.target.checked
+                          ? [...prev.ceremonies, "Wedding Night"]
+                          : prev.ceremonies.filter((item) => item !== "Wedding Night"),
+                      }))
+                    }
+                  />
+                  {t.weddingNight}
+                </label>
+              </fieldset>
               <div className="form-actions">
                 <button className="btn" type="submit">
-                  Confirm Now
+                  {t.confirmNow}
                 </button>
                 <a className="btn btn-outline" href={whatsappLink} target="_blank" rel="noreferrer">
-                  WhatsApp Confirm
+                  {t.whatsappConfirm}
                 </a>
               </div>
-              {rsvpSubmitted ? <p className="notice">Thank you. Your RSVP has been recorded.</p> : null}
+              {rsvpSubmitted ? <p className="notice">{t.rsvpThanks}</p> : null}
               {invitationPdf ? (
                 <a className="text-link" href={invitationPdf} target="_blank" rel="noreferrer">
                   Download Invitation PDF
@@ -608,23 +723,23 @@ function App() {
             </form>
 
             <article className="gold-card message-wall">
-              <h3>Guest Message Wall</h3>
+              <h3>{t.messageWall}</h3>
               <div className="message-form">
                 <textarea
                   rows={3}
-                  placeholder="Share your blessing..."
+                  placeholder={t.blessingPlaceholder}
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
                 />
                 <button className="btn" type="button" onClick={handleAddMessage}>
-                  Post Message
+                  {t.postMessage}
                 </button>
               </div>
               <ul>
                 {messages.length ? (
                   messages.map((msg) => <li key={msg.id}>{msg.text}</li>)
                 ) : (
-                  <li>Be the first to bless the couple.</li>
+                  <li>{t.firstBlessing}</li>
                 )}
               </ul>
             </article>
@@ -633,7 +748,11 @@ function App() {
       </main>
 
       <footer className="footer">
+<<<<<<< HEAD
         <p></p>
+=======
+        <p>{t.footer}</p>
+>>>>>>> 0e6e880 (Update invite: Saurabh name, remove developer credit, add language selector, and multi-select ceremony)
       </footer>
 
       {selectedPhoto ? (
