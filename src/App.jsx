@@ -201,6 +201,18 @@ const translations = {
     weatherRainShowers: "Rain Showers",
     weatherThunderstorm: "Thunderstorm",
     weatherUpdate: "Weather Update",
+    quickNav: "Quick Jump",
+    backHome: "Back to Home",
+    navHome: "Home",
+    navStory: "Story",
+    navShagun: "Shagun",
+    navBaraat: "Baraat",
+    navVenue: "Venue",
+    navWeather: "Weather",
+    navCountdown: "Countdown",
+    navTraditions: "Traditions",
+    navGallery: "Gallery",
+    navConfirmation: "Confirmation",
   },
   hi: {
     brand: "एसएस विवाह",
@@ -362,6 +374,18 @@ const translations = {
     weatherRainShowers: "बारिश की बौछार",
     weatherThunderstorm: "गरज के साथ बारिश",
     weatherUpdate: "मौसम अपडेट",
+    quickNav: "त्वरित नेविगेशन",
+    backHome: "होम पर जाएँ",
+    navHome: "होम",
+    navStory: "कहानी",
+    navShagun: "शगुन",
+    navBaraat: "बारात",
+    navVenue: "स्थल",
+    navWeather: "मौसम",
+    navCountdown: "काउंटडाउन",
+    navTraditions: "परंपराएं",
+    navGallery: "गैलरी",
+    navConfirmation: "पुष्टि",
   },
   mai: {
     brand: "एसएस बियाह",
@@ -523,6 +547,18 @@ const translations = {
     weatherRainShowers: "बरखा के बौछार",
     weatherThunderstorm: "गरज-बरस",
     weatherUpdate: "मौसम अपडेट",
+    quickNav: "फटाफट नेविगेशन",
+    backHome: "होम पर जाउ",
+    navHome: "होम",
+    navStory: "कहानी",
+    navShagun: "शगुन",
+    navBaraat: "बारात",
+    navVenue: "स्थल",
+    navWeather: "मौसम",
+    navCountdown: "काउंटडाउन",
+    navTraditions: "परंपरा",
+    navGallery: "गैलरी",
+    navConfirmation: "पुष्टि",
   },
 };
 
@@ -677,6 +713,7 @@ function App() {
   const [chatPending, setChatPending] = useState(null);
   const [chatVenueChoice, setChatVenueChoice] = useState(null);
   const [quickNavOpen, setQuickNavOpen] = useState(false);
+  const [fishLogoError, setFishLogoError] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const audioRef = useRef(null);
   const t = translations[language];
@@ -1095,16 +1132,16 @@ function App() {
       ? galleryUploadBaseUrl
       : selectedFolderLink;
   const quickSections = [
-    { id: "hero", label: "Home" },
-    { id: "story", label: "Story" },
-    { id: "shagun", label: "Shagun" },
-    { id: "baraat", label: "Baraat" },
-    { id: "venue", label: "Venue" },
-    { id: "weather", label: "Weather" },
-    { id: "countdown", label: "Countdown" },
-    { id: "traditions", label: "Traditions" },
-    { id: "gallery", label: "Gallery" },
-    { id: "rsvp", label: "Confirmation" },
+    { id: "hero", label: t.navHome },
+    { id: "story", label: t.navStory },
+    { id: "shagun", label: t.navShagun },
+    { id: "baraat", label: t.navBaraat },
+    { id: "venue", label: t.navVenue },
+    { id: "weather", label: t.navWeather },
+    { id: "countdown", label: t.navCountdown },
+    { id: "traditions", label: t.navTraditions },
+    { id: "gallery", label: t.navGallery },
+    { id: "rsvp", label: t.navConfirmation },
   ];
 
   function jumpToSection(id) {
@@ -1496,13 +1533,28 @@ function App() {
           type="button"
           className="quick-nav-toggle"
           onClick={() => setQuickNavOpen((v) => !v)}
-          aria-label="Quick navigation"
-          title="Quick navigation"
+          aria-label={t.quickNav}
+          title={t.quickNav}
         >
-          {quickNavOpen ? "×" : "{"}
+          {quickNavOpen ? (
+            "×"
+          ) : !fishLogoError ? (
+            <img
+              className="quick-nav-fish-img"
+              src={`${import.meta.env.BASE_URL}images/fish-logo.png`}
+              alt=""
+              aria-hidden="true"
+              onError={() => setFishLogoError(true)}
+            />
+          ) : (
+            <span className="quick-nav-fish-emoji" aria-hidden="true">🐟</span>
+          )}
         </button>
         {quickNavOpen ? (
           <nav className="quick-nav-panel" aria-label="Quick section links">
+            <button type="button" onClick={() => jumpToSection("hero")}>
+              {t.backHome}
+            </button>
             {quickSections.map((item) => (
               <button key={item.id} type="button" onClick={() => jumpToSection(item.id)}>
                 {item.label}

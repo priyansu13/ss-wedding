@@ -713,16 +713,36 @@ body[data-theme="dark"] .message-wall li {
 
 .quick-nav-toggle {
   border: 0;
-  width: 44px;
-  height: 68px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, #7f1024, #b31f36);
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background:
+    linear-gradient(140deg, #f3d48b, #f8edd4) padding-box,
+    linear-gradient(130deg, #7f1024, #d4af37, #b31f36) border-box;
+  border: 2px solid transparent;
   color: #fbe9c2;
-  font-size: 2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
   line-height: 1;
-  font-family: "Cormorant Garamond", serif;
-  box-shadow: 0 10px 22px rgba(128, 0, 32, 0.32);
+  font-family: "Manrope", sans-serif;
+  box-shadow:
+    0 10px 22px rgba(128, 0, 32, 0.32),
+    0 0 0 3px rgba(212, 175, 55, 0.18);
   cursor: pointer;
+  color: #6b0f24;
+  animation: quick-toggle-pop 1.8s ease-in-out infinite;
+}
+
+.quick-nav-fish-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
+.quick-nav-fish-emoji {
+  font-size: 1.35rem;
+  line-height: 1;
 }
 
 .quick-nav-panel {
@@ -744,6 +764,12 @@ body[data-theme="dark"] .message-wall li {
   padding: 0.28rem 0.5rem;
   cursor: pointer;
   text-align: left;
+}
+
+.quick-nav-panel button:first-child {
+  background: color-mix(in oklab, var(--maroon), transparent 8%);
+  color: #fff;
+  border-color: color-mix(in oklab, var(--gold), transparent 20%);
 }
 
 .chat-fab {
@@ -1134,9 +1160,14 @@ body[data-theme="dark"] .message-wall li {
   }
 
   .quick-nav-toggle {
-    width: 38px;
-    height: 54px;
-    font-size: 1.7rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1.05rem;
+  }
+
+  .quick-nav-fish-img {
+    width: 22px;
+    height: 22px;
   }
 
   .quick-nav-panel {
@@ -1304,5 +1335,15 @@ body[data-theme="dark"] .message-wall li {
   }
   to {
     transform: translateX(12px);
+  }
+}
+
+@keyframes quick-toggle-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
   }
 }
