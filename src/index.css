@@ -701,6 +701,15 @@ body[data-theme="dark"] .message-wall li {
   .mini-countdown,
   .big-counter {
     gap: 0.45rem;
+    justify-content: center;
+  }
+
+  .mini-countdown {
+    grid-template-columns: repeat(4, minmax(56px, 72px));
+  }
+
+  .big-counter {
+    grid-template-columns: repeat(4, minmax(60px, 80px));
   }
 
   .mini-countdown article,
