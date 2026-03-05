@@ -639,7 +639,7 @@ function App() {
   const [countdown, setCountdown] = useState(getTimeParts(weddingDate));
   const [darkMode, setDarkMode] = useState(false);
   const [audioOn, setAudioOn] = useState(false);
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("hi");
   const [weather, setWeather] = useState(initialWeather);
   const [rsvp, setRsvp] = useState(initialRsvp);
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
