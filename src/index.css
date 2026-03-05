@@ -156,10 +156,14 @@ body[data-theme="dark"] .topbar {
 
 .chip-notify {
   position: relative;
+  isolation: isolate;
 }
 
 .chip-notify.is-active {
   border-color: color-mix(in oklab, var(--gold), transparent 36%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 0 14px rgba(255, 255, 255, 0.22);
 }
 
 .chip-notify-dot {
@@ -169,8 +173,11 @@ body[data-theme="dark"] .topbar {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #ff3b30;
-  box-shadow: 0 0 0 1px rgba(255, 248, 231, 0.95);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(128, 0, 32, 0.35),
+    0 0 10px rgba(255, 255, 255, 0.85);
+  animation: notify-pulse 1.8s ease-in-out infinite;
 }
 
 .btn {
@@ -366,7 +373,7 @@ main {
 .ritual-card {
   border-radius: 18px;
   border: 1px solid color-mix(in oklab, var(--gold), transparent 55%);
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 16px rgba(54, 18, 16, 0.1);
 }
 
 .timeline-card,
@@ -439,32 +446,22 @@ main {
 .procession span:nth-child(5) { animation-delay: 0.4s; }
 
 .glass-card {
-  background:
-    linear-gradient(
-      165deg,
-      rgba(255, 255, 255, 0.96) 0%,
-      rgba(255, 247, 231, 0.93) 100%
-    );
+  background: var(--card);
   border: 1px solid color-mix(in oklab, var(--gold), white 45%);
   padding: 1rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 body[data-theme="dark"] .glass-card {
-  background:
-    linear-gradient(
-      165deg,
-      rgba(98, 28, 46, 0.9) 0%,
-      rgba(70, 18, 34, 0.88) 100%
-    );
+  background: var(--card);
   border-color: color-mix(in oklab, var(--gold), transparent 40%);
 }
 
 .glass-card:hover,
 .gold-card:hover,
 .ritual-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 24px rgba(54, 18, 16, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 16px rgba(54, 18, 16, 0.12);
 }
 
 .venue-grid {
@@ -1611,6 +1608,18 @@ body[data-theme="dark"] .chat-input input::placeholder {
     box-shadow:
       0 0 0 1px rgba(255, 236, 188, 0.65),
       0 0 22px rgba(212, 175, 55, 0.5);
+  }
+}
+
+@keyframes notify-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.16);
+    opacity: 1;
   }
 }
 
