@@ -784,7 +784,58 @@ function App() {
   }
 
   function getBotReply(raw) {
-    const _ = raw;
+    const q = raw.toLowerCase();
+    const has = (words) => words.some((w) => q.includes(w));
+
+    if (has(["weather", "aqi", "temperature", "temp", "tempreature", "मौसम", "तापमान"])) {
+      if (weather.loading) {
+        return t.loadingWeather;
+      }
+      if (weather.error) {
+        return weather.error;
+      }
+
+      const current = weather.now
+        ? `${weather.now.temp}°C, ${weather.now.condition}, ${t.humidity}: ${weather.now.humidity}%, ${t.windSpeed}: ${weather.now.wind} km/h`
+        : t.weatherUnavailable;
+
+      const aqiLine = weather.aqi ? `AQI: ${weather.aqi} (${aqiMeta.label})` : "AQI: N/A";
+      const forecastLine = weather.forecast.length
+        ? weather.forecast.map((d) => `${d.day}: ${d.temp}°C, ${d.condition}`).join(" | ")
+        : "Forecast: N/A";
+
+      return [
+        `${t.weatherTitle}`,
+        current,
+        aqiLine,
+        forecastLine,
+      ].join("\n");
+    }
+
+    if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
+      return `${t.venueTitle}: ${t.venueName}, ${t.venueAddress}. ${t.openMaps}.`;
+    }
+
+    if (has(["time", "date", "when", "कब", "समय", "तिथि"])) {
+      return `${t.dateLine}\n${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`;
+    }
+
+    if (has(["confirm", "confirmation", "attendance", "पुष्टि", "उपस्थिति"])) {
+      return chat.ConfirmationHint;
+    }
+
+    if (has(["dress", "code", "outfit", "पोशाक", "वेशभूषा"])) {
+      return `${t.dressCodeLabel}: ${t.shagunDress}`;
+    }
+
+    if (has(["contact", "phone", "number", "संपर्क"])) {
+      return `${t.contactTitle}: ${t.contactValue}`;
+    }
+
+    if (has(["language", "hindi", "english", "maithili", "भाषा"])) {
+      return `${t.language}: ${t.languageHindi}, ${t.languageMaithili}, ${t.languageEnglish}.`;
+    }
+
     return [
       `${t.couple}`,
       `${t.dateLine}`,
@@ -792,9 +843,6 @@ function App() {
       `${t.venueTitle}: ${t.venueName}, ${t.venueAddress}`,
       `${t.contactTitle}: ${t.contactValue}`,
       `${t.dressCodeLabel}: ${t.shagunDress}`,
-      `${t.weatherTitle}: ${t.weatherSubtitle}`,
-      `${t.language}: ${t.languageHindi}, ${t.languageMaithili}, ${t.languageEnglish}`,
-      `${t.ceremony}: ${t.shagunCeremony}, ${t.weddingNight}, ${t.bothCeremonies}`,
       chat.ConfirmationHint,
     ].join("\n");
   }
