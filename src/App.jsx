@@ -522,6 +522,10 @@ const chatbotText = {
     prompts: ["Venue", "Timing", "Confirmation", "Contact"],
     ConfirmationHint:
       "Please fill the Confirmation form and click Confirm Now to send your details on WhatsApp.",
+    askVenueType: "Which venue do you want: Shagun or Wedding?",
+    askTimingType: "Which timing do you want: Shagun or Wedding?",
+    chooseShagunWedding: "Please type Shagun or Wedding.",
+    weddingTiming: "Wedding: Sunday, April 26, 2026, 7:00 PM onwards",
   },
   hi: {
     open: "मुझसे पूछें",
@@ -536,6 +540,10 @@ const chatbotText = {
     prompts: ["स्थान", "समय", "पुष्टि", "संपर्क"],
     ConfirmationHint:
       "कृपया पुष्टि फॉर्म भरें और WhatsApp पर विवरण भेजने के लिए Confirm Now दबाएँ।",
+    askVenueType: "आप कौन सा स्थान जानना चाहते हैं: शगुन या विवाह?",
+    askTimingType: "आप कौन सा समय जानना चाहते हैं: शगुन या विवाह?",
+    chooseShagunWedding: "कृपया शगुन या विवाह लिखें।",
+    weddingTiming: "विवाह: रविवार, 26 अप्रैल 2026, शाम 7:00 बजे से",
   },
   mai: {
     open: "हमसँ पुछू",
@@ -550,6 +558,10 @@ const chatbotText = {
     prompts: ["स्थान", "समय", "पुष्टि", "संपर्क"],
     ConfirmationHint:
       "कृपया पुष्टि फॉर्म भरू आ WhatsApp पर विवरण भेजबाक लेल Confirm Now दबाउ।",
+    askVenueType: "अहाँ ककर स्थान चाहैत छी: शगुन कि बियाह?",
+    askTimingType: "अहाँ ककर समय चाहैत छी: शगुन कि बियाह?",
+    chooseShagunWedding: "कृपया शगुन वा बियाह लिखू।",
+    weddingTiming: "बियाह: रवि, 26 अप्रैल 2026, साँझ 7:00 बजे सँ",
   },
 };
 
@@ -628,6 +640,7 @@ function App() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const [chatPending, setChatPending] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const audioRef = useRef(null);
   const t = translations[language];
@@ -654,6 +667,7 @@ function App() {
       },
     ]);
     setChatInput("");
+    setChatPending(null);
   }, [chat]);
 
   useEffect(() => {
@@ -786,13 +800,14 @@ function App() {
   function getBotReply(raw) {
     const q = raw.toLowerCase();
     const has = (words) => words.some((w) => q.includes(w));
+    const points = (items) => items.map((item) => `- ${item}`).join("\n");
 
     if (has(["weather", "aqi", "temperature", "temp", "tempreature", "मौसम", "तापमान"])) {
       if (weather.loading) {
-        return t.loadingWeather;
+        return points([t.loadingWeather]);
       }
       if (weather.error) {
-        return weather.error;
+        return points([weather.error]);
       }
 
       const current = weather.now
@@ -804,39 +819,39 @@ function App() {
         ? weather.forecast.map((d) => `${d.day}: ${d.temp}°C, ${d.condition}`).join(" | ")
         : "Forecast: N/A";
 
-      return [
-        `${t.weatherTitle}`,
+      return points([
+        t.weatherTitle,
         current,
         aqiLine,
         forecastLine,
-      ].join("\n");
+      ]);
     }
 
     if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
-      return `${t.venueTitle}: ${t.venueName}, ${t.venueAddress}. ${t.openMaps}.`;
+      return points([`${t.venueTitle}: ${t.venueName}, ${t.venueAddress}`, t.openMaps]);
     }
 
     if (has(["time", "date", "when", "कब", "समय", "तिथि"])) {
-      return `${t.dateLine}\n${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`;
+      return points([t.dateLine, `${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`]);
     }
 
     if (has(["confirm", "confirmation", "attendance", "पुष्टि", "उपस्थिति"])) {
-      return chat.ConfirmationHint;
+      return points([chat.ConfirmationHint]);
     }
 
     if (has(["dress", "code", "outfit", "पोशाक", "वेशभूषा"])) {
-      return `${t.dressCodeLabel}: ${t.shagunDress}`;
+      return points([`${t.dressCodeLabel}: ${t.shagunDress}`]);
     }
 
     if (has(["contact", "phone", "number", "संपर्क"])) {
-      return `${t.contactTitle}: ${t.contactValue}`;
+      return points([`${t.contactTitle}: ${t.contactValue}`]);
     }
 
     if (has(["language", "hindi", "english", "maithili", "भाषा"])) {
-      return `${t.language}: ${t.languageHindi}, ${t.languageMaithili}, ${t.languageEnglish}.`;
+      return points([`${t.language}: ${t.languageHindi}, ${t.languageMaithili}, ${t.languageEnglish}`]);
     }
 
-    return [
+    return points([
       `${t.couple}`,
       `${t.dateLine}`,
       `${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`,
@@ -844,13 +859,55 @@ function App() {
       `${t.contactTitle}: ${t.contactValue}`,
       `${t.dressCodeLabel}: ${t.shagunDress}`,
       chat.ConfirmationHint,
-    ].join("\n");
+    ]);
+  }
+
+  function getEventChoice(raw) {
+    const q = raw.toLowerCase();
+    if (["shagun", "शगुन"].some((w) => q.includes(w))) return "shagun";
+    if (["wedding", "विवाह", "बियाह"].some((w) => q.includes(w))) return "wedding";
+    return null;
   }
 
   function sendChatMessage(customText) {
     const text = (customText ?? chatInput).trim();
     if (!text) return;
-    const reply = getBotReply(text);
+    const q = text.toLowerCase();
+    const has = (words) => words.some((w) => q.includes(w));
+    const selectedEvent = getEventChoice(text);
+    let reply = "";
+
+    if (chatPending === "venue") {
+      if (selectedEvent === "shagun") {
+        reply = `- ${t.shagunTitle}: ${t.shagunVenue}`;
+        setChatPending(null);
+      } else if (selectedEvent === "wedding") {
+        reply = `- ${t.venueTitle}: ${t.venueName}, ${t.venueAddress}`;
+        setChatPending(null);
+      } else {
+        reply = `- ${chat.chooseShagunWedding}`;
+      }
+    } else if (chatPending === "timing") {
+      if (selectedEvent === "shagun") {
+        reply = `- ${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`;
+        setChatPending(null);
+      } else if (selectedEvent === "wedding") {
+        reply = `- ${chat.weddingTiming}`;
+        setChatPending(null);
+      } else {
+        reply = `- ${chat.chooseShagunWedding}`;
+      }
+    } else if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
+      reply = `- ${chat.askVenueType}`;
+      setChatPending("venue");
+    } else if (has(["time", "date", "when", "कब", "समय", "तिथि"])) {
+      reply = `- ${chat.askTimingType}`;
+      setChatPending("timing");
+    } else {
+      reply = getBotReply(text);
+      setChatPending(null);
+    }
+
     setChatMessages((prev) => [
       ...prev,
       { id: Date.now(), sender: "user", text },
@@ -1254,8 +1311,13 @@ function App() {
       {chatOpen ? (
         <section className="chat-widget" aria-live="polite">
           <header>
-            <strong>{chat.title}</strong>
-            <span>{chat.subtitle}</span>
+            <div>
+              <strong>{chat.title}</strong>
+              <span>{chat.subtitle}</span>
+            </div>
+            <button type="button" className="chat-close" onClick={() => setChatOpen(false)} aria-label={t.close}>
+              ×
+            </button>
           </header>
           <div className="chat-messages">
             {chatMessages.map((item) => (

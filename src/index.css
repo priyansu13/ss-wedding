@@ -724,16 +724,34 @@ body[data-theme="dark"] .message-wall li {
 }
 
 .chat-widget header {
-  display: grid;
-  gap: 0.15rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
   padding: 0.62rem 0.72rem;
   background: color-mix(in oklab, var(--maroon), transparent 14%);
   color: #fff;
 }
 
+.chat-widget header div {
+  display: grid;
+  gap: 0.15rem;
+}
+
 .chat-widget header span {
   font-size: 0.72rem;
   opacity: 0.9;
+}
+
+.chat-close {
+  border: 0;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  line-height: 1;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .chat-messages {
@@ -750,6 +768,7 @@ body[data-theme="dark"] .message-wall li {
   line-height: 1.35;
   padding: 0.44rem 0.58rem;
   border-radius: 9px;
+  white-space: pre-line;
 }
 
 .chat-bot {
