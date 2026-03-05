@@ -892,9 +892,15 @@ function App() {
   const chatMessagesRef = useRef(null);
   const speechRecognitionRef = useRef(null);
   const sendChatMessageRef = useRef(null);
+  const chatResponseTimersRef = useRef([]);
   const flowerDropIdRef = useRef(0);
   const flowerDropTimersRef = useRef([]);
   const lastFlowerDropAtRef = useRef(0);
+
+  const clearChatResponseTimers = useCallback(() => {
+    chatResponseTimersRef.current.forEach((timerId) => clearTimeout(timerId));
+    chatResponseTimersRef.current = [];
+  }, []);
 
   const clearFlowerTimers = useCallback(() => {
     flowerDropTimersRef.current.forEach((timerId) => clearTimeout(timerId));
@@ -1019,6 +1025,7 @@ function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => () => clearChatResponseTimers(), [clearChatResponseTimers]);
   useEffect(() => () => clearFlowerTimers(), [clearFlowerTimers]);
 
   useEffect(() => {
@@ -1571,7 +1578,7 @@ function App() {
     setChatMessages((prev) => [...prev, userMessage]);
     setChatLoading(true);
     const responseDelayMs = 900 + Math.floor(Math.random() * 500);
-    setTimeout(() => {
+    const timerId = setTimeout(() => {
       const shouldShowQuickActions = reply === chat.fallback;
       setChatMessages((prev) => [
         ...prev,
@@ -1585,6 +1592,7 @@ function App() {
         }, 220);
       }
     }, responseDelayMs);
+    chatResponseTimersRef.current.push(timerId);
     setChatInput("");
   }
 
@@ -1631,13 +1639,14 @@ function App() {
     setChatMessages((prev) => [...prev, userMessage]);
     setChatLoading(true);
     const responseDelayMs = 900 + Math.floor(Math.random() * 500);
-    setTimeout(() => {
+    const timerId = setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
         { id: Date.now() + 1, sender: "bot", text: reply },
       ]);
       setChatLoading(false);
     }, responseDelayMs);
+    chatResponseTimersRef.current.push(timerId);
   }
 
   useEffect(() => {
@@ -1833,7 +1842,22 @@ function App() {
   }
 
   function closeChat() {
+    clearChatResponseTimers();
+    const recognition = speechRecognitionRef.current;
+    if (recognition && chatListening) {
+      try {
+        recognition.stop();
+      } catch {
+        // ignore stop error
+      }
+    }
     setChatOpen(false);
+    setChatInput("");
+    setChatMessages([]);
+    setChatLoading(false);
+    setChatQuickActions(false);
+    setChatPending(null);
+    setChatVenueChoice(null);
   }
 
   return (
