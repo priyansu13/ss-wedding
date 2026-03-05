@@ -202,6 +202,7 @@ const translations = {
     weatherThunderstorm: "Thunderstorm",
     weatherUpdate: "Weather Update",
     quickNav: "Quick Jump",
+    moreInfo: "More Info",
     backHome: "Back to Home",
     navHome: "Home",
     navStory: "Story",
@@ -375,6 +376,7 @@ const translations = {
     weatherThunderstorm: "गरज के साथ बारिश",
     weatherUpdate: "मौसम अपडेट",
     quickNav: "त्वरित नेविगेशन",
+    moreInfo: "और जानकारी",
     backHome: "होम पर जाएँ",
     navHome: "होम",
     navStory: "कहानी",
@@ -548,6 +550,7 @@ const translations = {
     weatherThunderstorm: "गरज-बरस",
     weatherUpdate: "मौसम अपडेट",
     quickNav: "फटाफट नेविगेशन",
+    moreInfo: "आओर जानकारी",
     backHome: "होम पर जाउ",
     navHome: "होम",
     navStory: "कहानी",
@@ -713,7 +716,6 @@ function App() {
   const [chatPending, setChatPending] = useState(null);
   const [chatVenueChoice, setChatVenueChoice] = useState(null);
   const [quickNavOpen, setQuickNavOpen] = useState(false);
-  const [fishLogoError, setFishLogoError] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const audioRef = useRef(null);
   const t = translations[language];
@@ -1084,13 +1086,35 @@ function App() {
       const parts = line.split(urlRegex);
       return (
         <span key={`line-${lineIndex}`}>
-          {parts.map((part, i) =>
-            /^https?:\/\//i.test(part) ? (
+          {parts.map((part, i) => {
+            if (!/^https?:\/\//i.test(part)) {
+              return <span key={`txt-${lineIndex}-${i}`}>{part}</span>;
+            }
+
+            let label = part;
+            let isMapsLink = false;
+
+            try {
+              const u = new URL(part);
+              const host = u.hostname.toLowerCase();
+              isMapsLink =
+                host === "maps.google.com" ||
+                host.endsWith(".maps.google.com") ||
+                (host.includes("google.") && u.pathname.toLowerCase().includes("/maps"));
+              if (isMapsLink) {
+                label = t.openMaps;
+              }
+            } catch {
+              // ignore URL parse error and keep raw label
+            }
+
+            return (
               <a
                 key={`url-${lineIndex}-${i}`}
                 href={part}
                 target="_blank"
                 rel="noreferrer"
+                className={isMapsLink ? "chat-link-btn" : undefined}
                 onClick={(e) => {
                   try {
                     const u = new URL(part);
@@ -1108,12 +1132,10 @@ function App() {
                   }
                 }}
               >
-                {part}
+                {label}
               </a>
-            ) : (
-              <span key={`txt-${lineIndex}-${i}`}>{part}</span>
-            )
-          )}
+            );
+          })}
           {lineIndex < text.split("\n").length - 1 ? <br /> : null}
         </span>
       );
@@ -1230,19 +1252,7 @@ function App() {
                 aria-label={t.quickNav}
                 title={t.quickNav}
               >
-                {quickNavOpen ? (
-                  "×"
-                ) : !fishLogoError ? (
-                  <img
-                    className="quick-nav-fish-img"
-                    src={`${import.meta.env.BASE_URL}images/fish-logo.png`}
-                    alt=""
-                    aria-hidden="true"
-                    onError={() => setFishLogoError(true)}
-                  />
-                ) : (
-                  <span className="quick-nav-fish-emoji" aria-hidden="true">🐟</span>
-                )}
+                {quickNavOpen ? t.close : t.moreInfo}
               </button>
               {quickNavOpen ? (
                 <nav className="quick-nav-panel" aria-label="Quick section links">
@@ -1628,6 +1638,16 @@ function App() {
             </div>
           ) : null}
           {chatPending === "venue" ? (
+            <div className="chat-venue-options">
+              <button type="button" onClick={() => sendChatMessage("Shagun")}>
+                {t.shagunCeremony}
+              </button>
+              <button type="button" onClick={() => sendChatMessage("Wedding")}>
+                {t.weddingNight}
+              </button>
+            </div>
+          ) : null}
+          {chatPending === "timing" ? (
             <div className="chat-venue-options">
               <button type="button" onClick={() => sendChatMessage("Shagun")}>
                 {t.shagunCeremony}
