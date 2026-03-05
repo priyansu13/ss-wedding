@@ -671,9 +671,9 @@ const chatbotText = {
     placeholder: "Ask about venue, timing, confirmation...",
     send: "Send",
     greeting:
-      "Hi. I can help with venue, timings, confirmation, weather, contact, and language options.",
+      "Hello. I can assist you with venue details, timings, confirmation, weather, contact, and language options.",
     fallback:
-      "I could not match that. Ask about venue, time, confirmation, dress code, contact, weather, or language.",
+      "I could not match that request. Please ask about venue, timing, confirmation, dress code, contact, weather, or language.",
     prompts: ["Venue", "Timing", "Confirmation", "Contact"],
     ConfirmationHint:
       "Please fill the Confirmation form and click Confirm Now to send your details on WhatsApp.",
@@ -685,6 +685,7 @@ const chatbotText = {
     weddingTiming: "Wedding: Sunday, April 26, 2026, 7:00 PM onwards",
     askLocationLink: "Do you want the location link? Reply yes or no.",
     yesNoHint: "Please reply with yes or no.",
+    acknowledged: "Understood. Let me know if you need anything else.",
     askLanguageChoice: "Choose language using the buttons below, or type language name.",
   },
   hi: {
@@ -694,9 +695,9 @@ const chatbotText = {
     placeholder: "स्थान, समय, पुष्टि के बारे में पूछें...",
     send: "भेजें",
     greeting:
-      "नमस्ते। मैं स्थान, समय, पुष्टि, मौसम, संपर्क और भाषा विकल्प में मदद कर सकता हूँ।",
+      "नमस्ते। मैं स्थान, समय, पुष्टि, मौसम, संपर्क और भाषा विकल्प की जानकारी पेशेवर तरीके से दे सकता हूँ।",
     fallback:
-      "मैं इसे समझ नहीं पाया। कृपया स्थान, समय, पुष्टि, वेशभूषा, संपर्क, मौसम या भाषा के बारे में पूछें।",
+      "क्षमा करें, मैं इस अनुरोध को समझ नहीं पाया। कृपया स्थान, समय, पुष्टि, वेशभूषा, संपर्क, मौसम या भाषा के बारे में पूछें।",
     prompts: ["स्थान", "समय", "पुष्टि", "संपर्क"],
     ConfirmationHint:
       "कृपया पुष्टि फॉर्म भरें और WhatsApp पर विवरण भेजने के लिए Confirm Now दबाएँ।",
@@ -708,6 +709,7 @@ const chatbotText = {
     weddingTiming: "विवाह: रविवार, 26 अप्रैल 2026, शाम 7:00 बजे से",
     askLocationLink: "क्या आप स्थान लिंक चाहते हैं? हाँ या ना लिखें।",
     yesNoHint: "कृपया हाँ या ना में जवाब दें।",
+    acknowledged: "ठीक है। यदि आपको और जानकारी चाहिए, तो बताएं।",
     askLanguageChoice: "नीचे दिए बटन से भाषा चुनें, या भाषा का नाम लिखें।",
   },
   mai: {
@@ -717,9 +719,9 @@ const chatbotText = {
     placeholder: "स्थान, समय, पुष्टि बारेमे पुछू...",
     send: "भेजू",
     greeting:
-      "नमस्कार। हम स्थान, समय, पुष्टि, मौसम, संपर्क आ भाषा विकल्प मे मदद कऽ सकैत छी।",
+      "नमस्कार। हम स्थान, समय, पुष्टि, मौसम, संपर्क आ भाषा विकल्पक जानकारी स्पष्ट रूप सँ देबामे मदद कऽ सकैत छी।",
     fallback:
-      "ई प्रश्न नहि बुझायल। कृपया स्थान, समय, पुष्टि, पोशाक, संपर्क, मौसम वा भाषा पर पुछू।",
+      "क्षमा करू, ई अनुरोध स्पष्ट नहि बुझायल। कृपया स्थान, समय, पुष्टि, पोशाक, संपर्क, मौसम वा भाषा पर पुछू।",
     prompts: ["स्थान", "समय", "पुष्टि", "संपर्क"],
     ConfirmationHint:
       "कृपया पुष्टि फॉर्म भरू आ WhatsApp पर विवरण भेजबाक लेल Confirm Now दबाउ।",
@@ -731,6 +733,7 @@ const chatbotText = {
     weddingTiming: "बियाह: रवि, 26 अप्रैल 2026, साँझ 7:00 बजे सँ",
     askLocationLink: "की अहाँ स्थान लिंक चाहैत छी? हँ वा नहि लिखू।",
     yesNoHint: "कृपया हँ वा नहि मे जवाब दिऔ।",
+    acknowledged: "ठीक अछि। जँ आओर जानकारी चाही तँ जरूर पुछू।",
     askLanguageChoice: "नीचाँ देल बटन सँ भाषा चुनू, वा भाषाक नाम लिखू।",
   },
 };
@@ -1107,59 +1110,37 @@ function App() {
 
   async function handleEnableBrowserAlerts() {
     const latestHeadline = latestUpdate?.headline || latestUpdate?.details || t.updatesBrowserFallback;
-    const showLatestUpdateNow = () => {
-      if ("Notification" in window && Notification.permission === "granted" && updatePrefs.browser) {
-        new Notification(t.updatesBrowserTitle, {
-          body: latestHeadline,
-        });
-      } else {
-        window.alert(latestHeadline);
-      }
-      setHasFreshUpdate(false);
-    };
-
-    if (hasFreshUpdate && latestUpdate) {
-      showLatestUpdateNow();
-      return;
-    }
 
     if (!("Notification" in window)) {
       setUpdatesStatus(t.updatesBrowserUnsupported);
       setNotificationPermission("unsupported");
-      if (latestUpdate) {
-        window.alert(latestHeadline);
-      }
       return;
+    }
+
+    if (Notification.permission === "default") {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      if (permission !== "granted") {
+        setUpdatePrefs((prev) => ({ ...prev, browser: false }));
+        setUpdatesStatus(t.updatesBrowserDenied);
+        return;
+      }
     }
 
     if (Notification.permission === "granted") {
       setUpdatePrefs((prev) => ({ ...prev, browser: true }));
       setNotificationPermission("granted");
-      setHasFreshUpdate(false);
       new Notification(t.updatesBrowserTitle, {
         body: latestUpdate ? latestHeadline : t.updatesBrowserGranted,
       });
-      return;
-    }
-
-    const permission = await Notification.requestPermission();
-    setNotificationPermission(permission);
-    if (permission === "granted") {
-      setUpdatePrefs((prev) => ({ ...prev, browser: true }));
-      setUpdatesStatus(t.updatesBrowserGranted);
-      setHasFreshUpdate(false);
-      new Notification(t.updatesBrowserTitle, {
-        body: latestUpdate ? latestHeadline : t.updatesBrowserGranted,
-      });
+      if (hasFreshUpdate && latestUpdate) {
+        setHasFreshUpdate(false);
+      }
       return;
     }
 
     setUpdatePrefs((prev) => ({ ...prev, browser: false }));
     setUpdatesStatus(t.updatesBrowserDenied);
-    if (latestUpdate) {
-      window.alert(latestHeadline);
-      setHasFreshUpdate(false);
-    }
   }
 
   function handleSaveUpdatePrefs(event) {
@@ -1188,7 +1169,7 @@ function App() {
   function getBotReply(raw) {
     const q = raw.toLowerCase();
     const has = (words) => words.some((w) => q.includes(w));
-    const points = (items) => items.map((item) => `- ${item}`).join("\n");
+    const points = (items) => items.filter(Boolean).join("\n");
     const asksShagunMap =
       (has(["shagun", "शगुन", "पुतई", "putai"]) && has(["location", "map", "venue", "स्थान", "ठाम"])) ||
       has(["putai map", "putai location", "शगुन मैप", "शगुन map"]);
@@ -1297,7 +1278,7 @@ function App() {
     let reply = "";
 
     if (chatPending === "confirmation") {
-      reply = `- ${chat.tapToOpenConfirmation}`;
+      reply = chat.tapToOpenConfirmation;
     } else if (chatPending === "language") {
       if (selectedLanguage) {
         setLanguage(selectedLanguage);
@@ -1306,18 +1287,18 @@ function App() {
         setChatInput("");
         return;
       }
-      reply = `- ${chat.askLanguageChoice}`;
+      reply = chat.askLanguageChoice;
     } else if (chatPending === "venue") {
       if (selectedEvent === "shagun") {
-        reply = `- ${t.shagunTitle}: ${t.shagunVenue}\n- ${chat.askLocationLink}`;
+        reply = `${t.shagunTitle}: ${t.shagunVenue}\n${chat.askLocationLink}`;
         setChatPending("locationLink");
         setChatVenueChoice("shagun");
       } else if (selectedEvent === "wedding") {
-        reply = `- ${t.venueTitle}: ${t.venueName}, ${t.venueAddress}\n- ${chat.askLocationLink}`;
+        reply = `${t.venueTitle}: ${t.venueName}, ${t.venueAddress}\n${chat.askLocationLink}`;
         setChatPending("locationLink");
         setChatVenueChoice("wedding");
       } else {
-        reply = `- ${chat.chooseShagunWedding}`;
+        reply = chat.chooseShagunWedding;
       }
     } else if (chatPending === "locationLink") {
       const yesNo = getYesNoChoice(text);
@@ -1327,40 +1308,40 @@ function App() {
         setChatPending(null);
         setChatVenueChoice(null);
       } else if (yesNo === "no") {
-        reply = `- OK`;
+        reply = chat.acknowledged;
         setChatPending(null);
         setChatVenueChoice(null);
       } else {
-        reply = `- ${chat.yesNoHint}`;
+        reply = chat.yesNoHint;
       }
     } else if (chatPending === "timing") {
       if (selectedEvent === "shagun") {
-        reply = `- ${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`;
+        reply = `${t.shagunTitle}: ${t.shagunDate}, ${t.shagunTime}`;
         setChatPending(null);
       } else if (selectedEvent === "wedding") {
-        reply = `- ${chat.weddingTiming}`;
+        reply = chat.weddingTiming;
         setChatPending(null);
       } else {
-        reply = `- ${chat.chooseShagunWedding}`;
+        reply = chat.chooseShagunWedding;
       }
     } else if (asksShagunMap) {
       reply = shagunMapLink;
       setChatPending(null);
       setChatVenueChoice("shagun");
     } else if (has(["venue", "location", "map", "स्थान", "ठाम"])) {
-      reply = `- ${chat.askVenueType}`;
+      reply = chat.askVenueType;
       setChatPending("venue");
     } else if (has(["time", "timing", "when", "कब", "समय"])) {
-      reply = `- ${chat.askTimingType}`;
+      reply = chat.askTimingType;
       setChatPending("timing");
     } else if (has(["date", "तिथि", "दिनांक"])) {
-      reply = `- ${chat.askTimingType}`;
+      reply = chat.askTimingType;
       setChatPending("timing");
     } else if (has(["confirm", "confirmation", "attendance", "पुष्टि", "उपस्थिति"])) {
-      reply = `- ${chat.tapToOpenConfirmation}`;
+      reply = chat.tapToOpenConfirmation;
       setChatPending("confirmation");
     } else if (has(["language", "हिंदी", "हिन्दी", "english", "अंग्रेज़ी", "अंग्रेजी", "maithili", "मैथिली", "भाषा"])) {
-      reply = `- ${chat.askLanguageChoice}`;
+      reply = chat.askLanguageChoice;
       setChatPending("language");
     } else if (selectedLanguage) {
       setLanguage(selectedLanguage);
@@ -1376,13 +1357,14 @@ function App() {
     const userMessage = { id: Date.now(), sender: "user", text };
     setChatMessages((prev) => [...prev, userMessage]);
     setChatLoading(true);
+    const responseDelayMs = 900 + Math.floor(Math.random() * 500);
     setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
         { id: Date.now() + 1, sender: "bot", text: reply },
       ]);
       setChatLoading(false);
-    }, 650);
+    }, responseDelayMs);
     setChatInput("");
   }
 
@@ -1536,7 +1518,7 @@ function App() {
             </button>
           ) : null}
           <label className="chip language-chip" htmlFor="language-select">
-            <span>{t.language}</span>
+            {language !== "en" ? <span>{t.language}</span> : null}
             <select
               className="language-select"
               id="language-select"
@@ -1572,7 +1554,9 @@ function App() {
                 fill="currentColor"
               />
             </svg>
-            {hasFreshUpdate ? <span className="chip-notify-dot" aria-hidden="true" /> : null}
+            {hasFreshUpdate && notificationPermission === "granted" ? (
+              <span className="chip-notify-dot" aria-hidden="true" />
+            ) : null}
           </button>
         </div>
       </header>
