@@ -205,7 +205,7 @@ const translations = {
     musicToggleTitle: "शहनाई संगीत चालू/बंद करें",
     musicMissingTitle: "संगीत के लिए VITE_SHEHNAI_AUDIO_URL सेट करें",
     together: "दोनों परिवारों के साथ",
-    couple: "दोनों परिवारों के साथ",
+    couple: "सौरभ और सोनी",
     dateLine: "रविवार, 26 अप्रैल 2026 | मधुबनी, बिहार",
     days: "दिन",
     hours: "घंटे",
@@ -658,8 +658,8 @@ function App() {
   const t = translations[language];
   const chat = chatbotText[language];
   const isHindi = language === "hi";
-  const heroEyebrowText = isHindi ? "" : t.together;
-  const heroTitleText = isHindi ? "दोनों परिवारों के साथ" : t.couple;
+  const heroEyebrowText = t.together;
+  const heroTitleText = t.couple;
 
   useEffect(() => {
     const id = setInterval(() => {
