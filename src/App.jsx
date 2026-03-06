@@ -20,14 +20,14 @@ const invitationPdf = /^https?:\/\//i.test(invitationPdfRaw)
   ? invitationPdfRaw
   : `${import.meta.env.BASE_URL}${invitationPdfRaw.replace(/^\/+/, "")}`;
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "+91 6207398499";
-const wishesWhatsappNumber =
-  import.meta.env.VITE_WISHES_WHATSAPP_NUMBER || "+91 7992371912";
 const rsvpGoogleFormActionUrl = import.meta.env.VITE_RSVP_GOOGLE_FORM_ACTION_URL || "";
 const rsvpGoogleFormNameEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_NAME_ENTRY || "";
 const rsvpGoogleFormTravelFromEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_TRAVEL_FROM_ENTRY || "";
 const rsvpGoogleFormGuestsEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_GUESTS_ENTRY || "";
 const rsvpGoogleFormCeremonyEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_CEREMONY_ENTRY || "";
 const rsvpGoogleFormLanguageEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_LANGUAGE_ENTRY || "";
+const guestWallGoogleFormActionUrl = import.meta.env.VITE_GUEST_WALL_GOOGLE_FORM_ACTION_URL || "";
+const guestWallGoogleFormMessageEntry = import.meta.env.VITE_GUEST_WALL_GOOGLE_FORM_MESSAGE_ENTRY || "";
 const rsvpFormShagunValue = import.meta.env.VITE_RSVP_FORM_SHAGUN_VALUE || "Shagun Ceremony";
 const rsvpFormWeddingValue = import.meta.env.VITE_RSVP_FORM_WEDDING_VALUE || "Wedding Night";
 const rsvpFormBothCeremoniesValue = import.meta.env.VITE_RSVP_FORM_BOTH_CEREMONIES_VALUE || "Both Ceremonies";
@@ -47,7 +47,6 @@ const galleryFolderLinks = {
 };
 const galleryUploadBaseUrl = import.meta.env.VITE_GALLERY_UPLOAD_URL || "";
 const whatsappNumberLink = whatsappNumber.replace(/\D/g, "");
-const wishesWhatsappNumberLink = wishesWhatsappNumber.replace(/\D/g, "");
 const updatesPrefStorageKey = "ss-updates-pref";
 const updatesSeenVersionStorageKey = "ss-updates-seen-version";
 
@@ -216,8 +215,8 @@ const translations = {
     bothCeremonies: "Both Ceremonies",
     confirmNow: "Confirm Now",
     whatsappConfirm: "WhatsApp Confirm",
-    rsvpThanks: "Thank you. Your response has been recorded.",
-    rsvpSubmitFailed: "Unable to submit right now. Please try again in a moment.",
+    rsvpThanks: "Welcome. Your confirmation is received.",
+    rsvpSubmitFailed: "Could not confirm now. Please try again.",
     downloadPdf: "Download Invitation PDF",
     enablePdf: "Set VITE_INVITATION_PDF_URL to enable PDF download.",
     viewAlbum: "View Album",
@@ -225,6 +224,8 @@ const translations = {
     messageWall: "Guest Message Wall",
     blessingPlaceholder: "Share your blessing...",
     postMessage: "Post Message",
+    blessingSent: "Blessing received.",
+    blessingFailed: "Could not send blessing. Please try again.",
     firstBlessing: "Be the first to bless the couple.",
     guestBlessingPrefix: "Guest Blessing",
     confirmMessagePrefix: "Graciously Confirm",
@@ -418,8 +419,8 @@ const translations = {
     bothCeremonies: "दोनों समारोह",
     confirmNow: "अभी पुष्टि करें",
     whatsappConfirm: "व्हाट्सऐप पुष्टि",
-    rsvpThanks: "धन्यवाद। आपका जवाब दर्ज कर लिया गया है।",
-    rsvpSubmitFailed: "अभी पुष्टि नहीं हो पाई। कृपया थोड़ी देर बाद फिर कोशिश करें।",
+    rsvpThanks: "स्वागत है। आपकी पुष्टि दर्ज हो गई है।",
+    rsvpSubmitFailed: "अभी पुष्टि नहीं हो पाई। कृपया फिर कोशिश करें।",
     downloadPdf: "निमंत्रण पत्र डाउनलोड करें",
     enablePdf: "PDF डाउनलोड के लिए VITE_INVITATION_PDF_URL सेट करें।",
     viewAlbum: "एल्बम देखें",
@@ -427,6 +428,8 @@ const translations = {
     messageWall: "अतिथि संदेश दीवार",
     blessingPlaceholder: "अपना आशीर्वाद लिखें...",
     postMessage: "संदेश भेजें",
+    blessingSent: "आशीर्वाद प्राप्त हुआ।",
+    blessingFailed: "आशीर्वाद नहीं भेजा जा सका। कृपया फिर कोशिश करें।",
     firstBlessing: "सबसे पहले आशीर्वाद दें।",
     guestBlessingPrefix: "अतिथि आशीर्वाद",
     confirmMessagePrefix: "कृपया पुष्टि",
@@ -620,8 +623,8 @@ const translations = {
     bothCeremonies: "दूनू समारोह",
     confirmNow: "एखन पुष्टि करू",
     whatsappConfirm: "व्हाट्सऐप पुष्टि",
-    rsvpThanks: "धन्यवाद। अहाँक जवाब दर्ज भ' गेल।",
-    rsvpSubmitFailed: "एखन पुष्टि नहि भ' सकल। कृपया किछु देर बाद फेर प्रयास करू।",
+    rsvpThanks: "स्वागत। अहाँक पुष्टि दर्ज भ' गेल अछि।",
+    rsvpSubmitFailed: "एखन पुष्टि नहि भ' सकल। कृपया फेर प्रयास करू।",
     downloadPdf: "निमंत्रण पत्र डाउनलोड करू",
     enablePdf: "PDF डाउनलोड लेल VITE_INVITATION_PDF_URL सेट करू।",
     viewAlbum: "एल्बम देखू",
@@ -629,6 +632,8 @@ const translations = {
     messageWall: "अतिथि संदेश दीवार",
     blessingPlaceholder: "अपन आशीर्वाद लिखू...",
     postMessage: "संदेश भेजू",
+    blessingSent: "आशीर्वाद प्राप्त भेल।",
+    blessingFailed: "आशीर्वाद नहि भेजल जा सकल। कृपया फेर प्रयास करू।",
     firstBlessing: "सभसँ पहिने आशीर्वाद दिऔ।",
     guestBlessingPrefix: "अतिथि आशीर्वाद",
     confirmMessagePrefix: "कृपया पुष्टि",
@@ -887,6 +892,7 @@ function App() {
   const [rsvpError, setRsvpError] = useState("");
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
+  const [messageStatus, setMessageStatus] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
@@ -1310,10 +1316,11 @@ function App() {
     }
   }
 
-  function handleAddMessage() {
+  async function handleAddMessage() {
     const text = messageInput.trim();
     if (!text) return;
 
+    setMessageStatus("");
     setMessages((prev) => [
       {
         id: Date.now(),
@@ -1321,15 +1328,29 @@ function App() {
       },
       ...prev,
     ]);
-    const messageForWhatsapp = `${t.guestBlessingPrefix}: ${text}`;
-    const wallWhatsappLink = `https://wa.me/${wishesWhatsappNumberLink}?text=${encodeURIComponent(
-      messageForWhatsapp
-    )}`;
-    window.open(wallWhatsappLink, "_blank", "noopener,noreferrer");
-    setMessageInput("");
-    setTimeout(() => {
-      window.location.reload();
-    }, 180);
+
+    if (!guestWallGoogleFormActionUrl || !guestWallGoogleFormMessageEntry) {
+      setMessageStatus(t.blessingFailed);
+      return;
+    }
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append(guestWallGoogleFormMessageEntry, text);
+      await fetch(guestWallGoogleFormActionUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: formData.toString(),
+        keepalive: true,
+      });
+      setMessageInput("");
+      setMessageStatus(t.blessingSent);
+    } catch {
+      setMessageStatus(t.blessingFailed);
+    }
   }
 
   function toggleUpdateTopic(topic) {
@@ -2414,6 +2435,7 @@ function App() {
                   {t.postMessage}
                 </button>
               </div>
+              {messageStatus ? <p className="notice">{messageStatus}</p> : null}
               <ul>
                 {messages.length ? (
                   messages.map((msg) => <li key={msg.id}>{msg.text}</li>)
