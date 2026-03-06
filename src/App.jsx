@@ -28,6 +28,10 @@ const rsvpGoogleFormPhoneEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_PHONE_ENT
 const rsvpGoogleFormGuestsEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_GUESTS_ENTRY || "";
 const rsvpGoogleFormCeremonyEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_CEREMONY_ENTRY || "";
 const rsvpGoogleFormLanguageEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_LANGUAGE_ENTRY || "";
+const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+const geminiModel = import.meta.env.VITE_GEMINI_MODEL || "gemini-1.5-flash";
+const geminiApiBaseUrl =
+  import.meta.env.VITE_GEMINI_API_BASE_URL || "https://generativelanguage.googleapis.com/v1beta";
 const updatesFeedUrl = `${import.meta.env.BASE_URL}update-feed.json`;
 const weddingMapLink = "https://maps.google.com/?q=Madhubani%20Bihar";
 const shagunMapLink = "https://maps.google.com/?q=Putai%20Bihar";
@@ -1497,6 +1501,57 @@ function App() {
     return null;
   }
 
+  async function getGeminiReply(raw) {
+    if (!geminiApiKey) return "";
+    const question = (raw || "").trim();
+    if (!question) return "";
+
+    const languageLabel = language === "en" ? "English" : language === "hi" ? "Hindi" : "Maithili";
+    const contextPrompt = [
+      "You are a concise wedding assistant for Saurabh and Soni's wedding invitation website.",
+      `Reply in ${languageLabel}.`,
+      "Keep response short and practical for guests.",
+      "Do not mention backend systems, APIs, Google Form internals, or hidden implementation details.",
+      `Wedding date line: ${t.dateLine}`,
+      `Shagun: ${t.shagunDate}, ${t.shagunTime}, ${t.shagunVenue}`,
+      `Wedding venue: ${t.venueName}, ${t.venueAddress}`,
+      `Contact: ${t.contactValue}`,
+      `User question: ${question}`,
+    ].join("\n");
+
+    try {
+      const endpoint = `${geminiApiBaseUrl}/models/${encodeURIComponent(geminiModel)}:generateContent?key=${encodeURIComponent(geminiApiKey)}`;
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: contextPrompt }],
+            },
+          ],
+          generationConfig: {
+            temperature: 0.35,
+            maxOutputTokens: 220,
+          },
+        }),
+      });
+      if (!res.ok) return "";
+      const data = await res.json();
+      const reply = data?.candidates?.[0]?.content?.parts
+        ?.map((part) => part?.text || "")
+        .filter(Boolean)
+        .join("\n")
+        .trim();
+      return reply || "";
+    } catch {
+      return "";
+    }
+  }
+
   function sendChatMessage(customText) {
     const text = (customText ?? chatInput).trim();
     if (!text) return;
@@ -1512,6 +1567,7 @@ function App() {
     const selectedGallery = getGalleryChoice(text);
     let reply = "";
     let languageToApply = null;
+    let tryGeminiForReply = false;
 
     if (chatPending === "fallbackDecision") {
       const yesNo = getYesNoChoice(text);
@@ -1629,21 +1685,31 @@ function App() {
     } else {
       reply = getBotReply(text);
       setChatPending(null);
-    }
-
-    if (reply === chat.fallback) {
-      setChatPending("fallbackDecision");
+      tryGeminiForReply = reply === chat.fallback;
     }
 
     const userMessage = { id: Date.now(), sender: "user", text };
     setChatMessages((prev) => [...prev, userMessage]);
     setChatLoading(true);
     const responseDelayMs = 900 + Math.floor(Math.random() * 500);
-    const timerId = setTimeout(() => {
-      const shouldShowQuickActions = reply === chat.fallback;
+    const timerId = setTimeout(async () => {
+      let finalReply = reply;
+      if (tryGeminiForReply) {
+        const geminiReply = await getGeminiReply(text);
+        if (geminiReply) {
+          finalReply = geminiReply;
+          setChatPending(null);
+        } else {
+          finalReply = chat.fallback;
+          setChatPending("fallbackDecision");
+        }
+      } else if (finalReply === chat.fallback) {
+        setChatPending("fallbackDecision");
+      }
+      const shouldShowQuickActions = finalReply === chat.fallback;
       setChatMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, sender: "bot", text: reply },
+        { id: Date.now() + 1, sender: "bot", text: finalReply },
       ]);
       setChatQuickActions(shouldShowQuickActions);
       setChatLoading(false);
