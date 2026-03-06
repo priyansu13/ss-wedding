@@ -222,6 +222,9 @@ const translations = {
     viewAlbum: "View Album",
     uploadPhoto: "Upload Photo",
     messageWall: "Guest Message Wall",
+    blessingName: "Your Name",
+    blessingNamePlaceholder: "Enter your name",
+    blessingMessage: "Your Blessing",
     blessingPlaceholder: "Share your blessing...",
     postMessage: "Post Message",
     blessingSent: "Blessing received.",
@@ -426,6 +429,9 @@ const translations = {
     viewAlbum: "एल्बम देखें",
     uploadPhoto: "फोटो अपलोड करें",
     messageWall: "अतिथि संदेश दीवार",
+    blessingName: "आपका नाम",
+    blessingNamePlaceholder: "अपना नाम लिखें",
+    blessingMessage: "आपका आशीर्वाद",
     blessingPlaceholder: "अपना आशीर्वाद लिखें...",
     postMessage: "संदेश भेजें",
     blessingSent: "आशीर्वाद प्राप्त हुआ।",
@@ -630,6 +636,9 @@ const translations = {
     viewAlbum: "एल्बम देखू",
     uploadPhoto: "फोटो अपलोड करू",
     messageWall: "अतिथि संदेश दीवार",
+    blessingName: "अहाँक नाम",
+    blessingNamePlaceholder: "अपन नाम लिखू",
+    blessingMessage: "अहाँक आशीर्वाद",
     blessingPlaceholder: "अपन आशीर्वाद लिखू...",
     postMessage: "संदेश भेजू",
     blessingSent: "आशीर्वाद प्राप्त भेल।",
@@ -891,6 +900,7 @@ function App() {
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
   const [rsvpError, setRsvpError] = useState("");
   const [messages, setMessages] = useState([]);
+  const [messageName, setMessageName] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [messageStatus, setMessageStatus] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
@@ -1317,14 +1327,15 @@ function App() {
   }
 
   async function handleAddMessage() {
+    const name = messageName.trim();
     const text = messageInput.trim();
-    if (!text) return;
+    if (!name || !text) return;
 
     setMessageStatus("");
     setMessages((prev) => [
       {
         id: Date.now(),
-        text,
+        text: `${name}: ${text}`,
       },
       ...prev,
     ]);
@@ -1336,7 +1347,7 @@ function App() {
 
     try {
       const formData = new URLSearchParams();
-      formData.append(guestWallGoogleFormMessageEntry, text);
+      formData.append(guestWallGoogleFormMessageEntry, `${name}: ${text}`);
       await fetch(guestWallGoogleFormActionUrl, {
         method: "POST",
         mode: "no-cors",
@@ -1346,6 +1357,7 @@ function App() {
         body: formData.toString(),
         keepalive: true,
       });
+      setMessageName("");
       setMessageInput("");
       setMessageStatus(t.blessingSent);
     } catch {
@@ -2425,12 +2437,23 @@ function App() {
             <article className="gold-card message-wall">
               <h3>{t.messageWall}</h3>
               <div className="message-form">
-                <textarea
-                  rows={3}
-                  placeholder={t.blessingPlaceholder}
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                />
+                <label className="message-field">
+                  {t.blessingName}
+                  <input
+                    placeholder={t.blessingNamePlaceholder}
+                    value={messageName}
+                    onChange={(e) => setMessageName(e.target.value)}
+                  />
+                </label>
+                <label className="message-field">
+                  {t.blessingMessage}
+                  <textarea
+                    rows={3}
+                    placeholder={t.blessingPlaceholder}
+                    value={messageInput}
+                    onChange={(e) => setMessageInput(e.target.value)}
+                  />
+                </label>
                 <button className="btn" type="button" onClick={handleAddMessage}>
                   {t.postMessage}
                 </button>

@@ -1247,6 +1247,16 @@ body[data-theme="dark"] textarea {
   gap: 0.6rem;
 }
 
+.message-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.message-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
 .message-wall ul {
   list-style: none;
   padding: 0;
