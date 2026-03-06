@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const weddingDate = new Date("2026-04-26T19:00:00+05:30");
@@ -975,6 +975,13 @@ function App() {
   }, [darkMode]);
 
   useEffect(() => {
+    document.body.dataset.lang = language;
+    return () => {
+      delete document.body.dataset.lang;
+    };
+  }, [language, chatOpen, chat.greeting]);
+
+  useEffect(() => {
     if (!chatOpen) return;
     if (chatMessages.length) return;
     setChatMessages([
@@ -985,6 +992,22 @@ function App() {
       },
     ]);
   }, [chatOpen, chat.greeting, chatMessages.length]);
+
+  useEffect(() => {
+    if (!chatOpen) return;
+    setChatInput("");
+    setChatLoading(false);
+    setChatQuickActions(false);
+    setChatPending(null);
+    setChatVenueChoice(null);
+    setChatMessages([
+      {
+        id: Date.now(),
+        sender: "bot",
+        text: chat.greeting,
+      },
+    ]);
+  }, [language]);
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -1918,7 +1941,7 @@ function App() {
             </button>
           ) : null}
           <label className="chip language-chip" htmlFor="language-select">
-            {language !== "en" ? <span>{t.language}</span> : null}
+            <span className="language-label">{t.language}</span>
             <select
               className="language-select"
               id="language-select"
