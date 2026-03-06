@@ -1,4 +1,4 @@
-﻿﻿
+﻿﻿﻿
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const weddingDate = new Date("2026-04-26T19:00:00+05:30");
@@ -104,6 +104,8 @@ const translations = {
     seconds: "seconds",
     acceptNow: "Accept Now",
     addToCalendar: "Add to Calendar",
+    addToHome: "Install",
+    addToHomeSuccess: "Installed. Open it from your home screen.",
     calendarEvent: "Wedding of Saurabh & Soni",
     calendarDetails:
       "With blessings of both families, join us for a Mithilanchal wedding celebration.",
@@ -311,6 +313,8 @@ const translations = {
     seconds: "सेकंड",
     acceptNow: "अभी स्वीकार करें",
     addToCalendar: "कैलेंडर में जोड़ें",
+    addToHome: "इंस्टॉल करें",
+    addToHomeSuccess: "इंस्टॉल हो गया। होम स्क्रीन से खोलें।",
     calendarEvent: "सौरभ और सोनी का विवाह",
     calendarDetails:
       "दोनों परिवारों के आशीर्वाद के साथ, मिथिलांचल विवाह समारोह में आपका स्वागत है।",
@@ -518,6 +522,8 @@ const translations = {
     seconds: "सेकंड",
     acceptNow: "एखन स्वीकार करू",
     addToCalendar: "कैलेंडर मे जोड़ू",
+    addToHome: "इंस्टॉल करू",
+    addToHomeSuccess: "इंस्टॉल भ' गेल। होम स्क्रीन सँ खोलू।",
     calendarEvent: "सौरभ आ सोनीक बियाह",
     calendarDetails:
       "दूनू परिवारक आशीर्वाद संग मिथिलांचल बियाह उत्सव मे अपनेक स्वागत अछि।",
@@ -915,6 +921,9 @@ function App() {
   const [chatVenueChoice, setChatVenueChoice] = useState(null);
   const [quickNavOpen, setQuickNavOpen] = useState(false);
   const [showHomeShortcut, setShowHomeShortcut] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [installAvailable, setInstallAvailable] = useState(false);
+  const [appInstalled, setAppInstalled] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [updatePrefs, setUpdatePrefs] = useState({
     phone: "",
@@ -935,6 +944,9 @@ function App() {
   const flowerDropTimersRef = useRef([]);
   const lastFlowerDropAtRef = useRef(0);
   const themeTransitionTimerRef = useRef(null);
+  const t = translations[language];
+  const chat = chatbotText[language];
+  const isHindi = language === "hi";
 
   const clearChatResponseTimers = useCallback(() => {
     chatResponseTimersRef.current.forEach((timerId) => clearTimeout(timerId));
@@ -945,6 +957,7 @@ function App() {
     flowerDropTimersRef.current.forEach((timerId) => clearTimeout(timerId));
     flowerDropTimersRef.current = [];
   }, []);
+
 
   const launchFlowerDrop = useCallback(() => {
     const now = Date.now();
@@ -968,9 +981,21 @@ function App() {
     }, 4300);
     flowerDropTimersRef.current.push(timerId);
   }, []);
-  const t = translations[language];
-  const chat = chatbotText[language];
-  const isHindi = language === "hi";
+
+  const handleAddToHome = useCallback(async () => {
+    if (!installPrompt) {
+      return;
+    }
+    installPrompt.prompt();
+    try {
+      const choice = await installPrompt.userChoice;
+      if (choice?.outcome !== "accepted") return;
+    } catch {
+      // ignore prompt failures
+    }
+    setInstallPrompt(null);
+    setInstallAvailable(false);
+  }, [installPrompt]);
   const heroEyebrowText = t.together;
   const heroTitleText = t.couple;
 
@@ -1099,6 +1124,32 @@ function App() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const isStandalone = window.matchMedia?.("(display-mode: standalone)")?.matches || window.navigator.standalone;
+    setAppInstalled(Boolean(isStandalone));
+
+    const handleBeforeInstall = (event) => {
+      event.preventDefault();
+      setInstallPrompt(event);
+      setInstallAvailable(true);
+    };
+
+    const handleInstalled = () => {
+      setInstallAvailable(false);
+      setInstallPrompt(null);
+      setAppInstalled(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+    window.addEventListener("appinstalled", handleInstalled);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      window.removeEventListener("appinstalled", handleInstalled);
+    };
   }, []);
 
   useEffect(() => () => clearChatResponseTimers(), [clearChatResponseTimers]);
@@ -2132,14 +2183,19 @@ function App() {
               ))}
             </div>
 
-            <div className="hero-buttons">
-              <a className="btn" href="#rsvp" onClick={launchFlowerDrop}>
-                {t.acceptNow}
-              </a>
-              <a className="btn btn-outline" href={buildCalendarUrl(t)} target="_blank" rel="noreferrer">
-                {t.addToCalendar}
-              </a>
-            </div>
+          <div className="hero-buttons">
+            <a className="btn" href="#rsvp" onClick={launchFlowerDrop}>
+              {t.acceptNow}
+            </a>
+            <a className="btn btn-outline" href={buildCalendarUrl(t)} target="_blank" rel="noreferrer">
+              {t.addToCalendar}
+            </a>
+            {!appInstalled ? (
+              <button type="button" className="btn btn-outline" onClick={handleAddToHome}>
+                {t.addToHome}
+              </button>
+            ) : null}
+          </div>
             <div className={`quick-nav-wrap ${quickNavOpen ? "open" : ""}`}>
               <button
                 type="button"
@@ -2669,6 +2725,7 @@ function App() {
           </div>
         </div>
       ) : null}
+
     </>
   );
 }
