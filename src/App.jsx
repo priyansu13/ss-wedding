@@ -2440,6 +2440,7 @@ function App() {
                 <label className="message-field">
                   {t.blessingName}
                   <input
+                    className="message-name-input"
                     placeholder={t.blessingNamePlaceholder}
                     value={messageName}
                     onChange={(e) => setMessageName(e.target.value)}
