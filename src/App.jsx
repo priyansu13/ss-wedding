@@ -27,6 +27,9 @@ const rsvpGoogleFormNameEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_NAME_ENTRY
 const rsvpGoogleFormGuestsEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_GUESTS_ENTRY || "";
 const rsvpGoogleFormCeremonyEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_CEREMONY_ENTRY || "";
 const rsvpGoogleFormLanguageEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_LANGUAGE_ENTRY || "";
+const rsvpFormShagunValue = import.meta.env.VITE_RSVP_FORM_SHAGUN_VALUE || "Shagun Ceremony";
+const rsvpFormWeddingValue = import.meta.env.VITE_RSVP_FORM_WEDDING_VALUE || "Wedding Night";
+const rsvpFormBothCeremoniesValue = import.meta.env.VITE_RSVP_FORM_BOTH_CEREMONIES_VALUE || "Both Ceremonies";
 const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
 const geminiModel = import.meta.env.VITE_GEMINI_MODEL || "gemini-1.5-flash";
 const geminiApiBaseUrl =
@@ -1252,13 +1255,14 @@ function App() {
       return;
     }
 
-    const selectedCeremonies = rsvp.ceremonies
-      .map((item) => {
-        if (item === "shagun") return t.shagunCeremony;
-        if (item === "wedding") return t.weddingNight;
-        return item;
-      })
-      .join(", ");
+    let selectedCeremonies = "";
+    if (rsvp.ceremonies.length === 2) {
+      selectedCeremonies = rsvpFormBothCeremoniesValue;
+    } else if (rsvp.ceremonies.includes("shagun")) {
+      selectedCeremonies = rsvpFormShagunValue;
+    } else if (rsvp.ceremonies.includes("wedding")) {
+      selectedCeremonies = rsvpFormWeddingValue;
+    }
     if (!rsvpGoogleFormActionUrl) {
       setRsvpSubmitted(false);
       setRsvpError(t.rsvpSubmitFailed);
@@ -1269,7 +1273,7 @@ function App() {
     if (rsvpGoogleFormNameEntry) formData.append(rsvpGoogleFormNameEntry, rsvp.name.trim());
     if (rsvpGoogleFormGuestsEntry) formData.append(rsvpGoogleFormGuestsEntry, rsvp.attendees);
     if (rsvpGoogleFormCeremonyEntry) {
-      formData.append(rsvpGoogleFormCeremonyEntry, selectedCeremonies || t.notSelected);
+      formData.append(rsvpGoogleFormCeremonyEntry, selectedCeremonies || rsvpFormWeddingValue);
     }
     if (rsvpGoogleFormLanguageEntry) formData.append(rsvpGoogleFormLanguageEntry, language.toUpperCase());
 
