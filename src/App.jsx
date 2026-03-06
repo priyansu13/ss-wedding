@@ -24,6 +24,7 @@ const wishesWhatsappNumber =
   import.meta.env.VITE_WISHES_WHATSAPP_NUMBER || "+91 7992371912";
 const rsvpGoogleFormActionUrl = import.meta.env.VITE_RSVP_GOOGLE_FORM_ACTION_URL || "";
 const rsvpGoogleFormNameEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_NAME_ENTRY || "";
+const rsvpGoogleFormTravelFromEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_TRAVEL_FROM_ENTRY || "";
 const rsvpGoogleFormGuestsEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_GUESTS_ENTRY || "";
 const rsvpGoogleFormCeremonyEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_CEREMONY_ENTRY || "";
 const rsvpGoogleFormLanguageEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_LANGUAGE_ENTRY || "";
@@ -206,6 +207,7 @@ const translations = {
     ],
     rsvpTitle: "Confirmation and Blessings",
     fullName: "Full Name",
+    travelFrom: "Traveling from: [City/State]",
     phone: "Phone Number",
     guests: "Number of Guests",
     ceremony: "Ceremony",
@@ -407,6 +409,7 @@ const translations = {
     ],
     rsvpTitle: "पुष्टि और आशीर्वाद",
     fullName: "पूरा नाम",
+    travelFrom: "यात्रा स्थान: [शहर/राज्य]",
     phone: "फोन नंबर",
     guests: "मेहमानों की संख्या",
     ceremony: "समारोह",
@@ -608,6 +611,7 @@ const translations = {
     ],
     rsvpTitle: "पुष्टि आ आशीर्वाद",
     fullName: "पूरा नाम",
+    travelFrom: "यात्रा स्थान: [शहर/राज्य]",
     phone: "फोन नंबर",
     guests: "मेहमानक संख्या",
     ceremony: "समारोह",
@@ -859,6 +863,7 @@ function buildCalendarUrl(t) {
 
 const initialRsvp = {
   name: "",
+  travelFrom: "",
   attendees: "2",
   ceremonies: ["wedding"],
 };
@@ -1251,7 +1256,7 @@ function App() {
   async function handleRsvpSubmit(event) {
     event.preventDefault();
 
-    if (!rsvp.name.trim() || !rsvp.ceremonies.length) {
+    if (!rsvp.name.trim() || !rsvp.travelFrom.trim() || !rsvp.ceremonies.length) {
       return;
     }
 
@@ -1271,6 +1276,9 @@ function App() {
 
     const formData = new URLSearchParams();
     if (rsvpGoogleFormNameEntry) formData.append(rsvpGoogleFormNameEntry, rsvp.name.trim());
+    if (rsvpGoogleFormTravelFromEntry) {
+      formData.append(rsvpGoogleFormTravelFromEntry, rsvp.travelFrom.trim());
+    }
     if (rsvpGoogleFormGuestsEntry) formData.append(rsvpGoogleFormGuestsEntry, rsvp.attendees);
     if (rsvpGoogleFormCeremonyEntry) {
       formData.append(rsvpGoogleFormCeremonyEntry, selectedCeremonies || rsvpFormWeddingValue);
@@ -2340,6 +2348,14 @@ function App() {
                   required
                   value={rsvp.name}
                   onChange={(e) => setRsvp((prev) => ({ ...prev, name: e.target.value }))}
+                />
+              </label>
+              <label>
+                {t.travelFrom}
+                <input
+                  required
+                  value={rsvp.travelFrom}
+                  onChange={(e) => setRsvp((prev) => ({ ...prev, travelFrom: e.target.value }))}
                 />
               </label>
               <label>
