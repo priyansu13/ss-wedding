@@ -10,6 +10,8 @@ const mapsEmbedUrl =
 const shehnaiSrc =
   import.meta.env.VITE_SHEHNAI_AUDIO_URL ||
   `${import.meta.env.BASE_URL}music/Sehnai_Dhun_Mangal_Dhun_Music_Mithila_Ke_Lok_Baja_Rasan_Chauki_256kbps.webm`;
+const melodySrc =
+  import.meta.env.VITE_MELODY_AUDIO_URL || `${import.meta.env.BASE_URL}music/melody.webm`;
 const sunIconSrc = `${import.meta.env.BASE_URL}images/sun.svg`;
 const moonIconSrc = `${import.meta.env.BASE_URL}images/moon.svg`;
 const musicIconSrc = `${import.meta.env.BASE_URL}images/music.png`;
@@ -38,6 +40,10 @@ const geminiApiBaseUrl =
 const updatesFeedUrl = `${import.meta.env.BASE_URL}update-feed.json`;
 const weddingMapLink = "https://maps.google.com/?q=Madhubani%20Bihar";
 const shagunMapLink = "https://maps.google.com/?q=Putai%20Bihar";
+const maxAudioVolume = 0.2;
+const fadeOutDurationMs = 10000;
+const audioAutoStopMs = 60000;
+const audioFadeStartMs = 50000;
 const galleryFolderLinks = {
   grandEntry: "https://drive.google.com/drive/folders/19TjjIsKZkT5rnssreugnOnBPnM8pQJhI",
   varmalaStage: "https://drive.google.com/drive/folders/1XloyehtZBt9o6tDYJoJeC4ARkYxEzZVS",
@@ -93,8 +99,8 @@ const translations = {
     alerts: "Alerts",
     playMusic: "Play",
     muteMusic: "Mute",
-    musicToggleTitle: "Toggle shehnai music",
-    musicMissingTitle: "Set VITE_SHEHNAI_AUDIO_URL to enable music",
+    musicToggleTitle: "Toggle background music",
+    musicMissingTitle: "Add music to enable playback",
     together: "Together with their families",
     couple: "Saurabh & Soni",
     dateLine: "Sunday, April 26, 2026 | Madhubani, Bihar",
@@ -300,8 +306,8 @@ const translations = {
     alerts: "अलर्ट",
     playMusic: "संगीत चलाएं",
     muteMusic: "संगीत बंद करें",
-    musicToggleTitle: "शहनाई संगीत चालू/बंद करें",
-    musicMissingTitle: "संगीत के लिए VITE_SHEHNAI_AUDIO_URL सेट करें",
+    musicToggleTitle: "संगीत चालू/बंद करें",
+    musicMissingTitle: "संगीत के लिए फ़ाइल जोड़ें",
     together: "दोनों परिवारों के साथ",
     couple: "सौरभ और सोनी",
     dateLine: "रविवार, 26 अप्रैल 2026 | मधुबनी, बिहार",
@@ -507,8 +513,8 @@ const translations = {
     alerts: "अलर्ट",
     playMusic: "संगीत चलाउ",
     muteMusic: "संगीत बन्न करू",
-    musicToggleTitle: "शहनाई संगीत चालू/बन्न करू",
-    musicMissingTitle: "संगीत लेल VITE_SHEHNAI_AUDIO_URL सेट करू",
+    musicToggleTitle: "संगीत चालू/बन्न करू",
+    musicMissingTitle: "संगीत लेल फाइल जोड़ू",
     together: "दूनू परिवारक संग",
     couple: "सौरभ आ सोनी",
     dateLine: "रवि, 26 अप्रैल 2026 | मधुबनी, बिहार",
@@ -926,7 +932,12 @@ function App() {
   const [updatesStatus, setUpdatesStatus] = useState("");
   const [hasFreshUpdate, setHasFreshUpdate] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(getNotificationPermission);
+  const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef(null);
+  const lastAudioSrcRef = useRef(null);
+  const audioTimeoutRef = useRef(null);
+  const fadeOutFrameRef = useRef(null);
+  const stopModeRef = useRef("fade");
   const chatMessagesRef = useRef(null);
   const speechRecognitionRef = useRef(null);
   const sendChatMessageRef = useRef(null);
@@ -938,6 +949,65 @@ function App() {
   const t = translations[language];
   const chat = chatbotText[language];
   const isHindi = language === "hi";
+  const activeAudioSrc = language === "mai" ? shehnaiSrc : melodySrc;
+
+  const clampAudioVolume = useCallback(() => {
+    if (!audioRef.current) return;
+    if (fadeOutFrameRef.current) return;
+    if (audioRef.current.volume > maxAudioVolume) {
+      audioRef.current.volume = maxAudioVolume;
+    }
+  }, []);
+
+  const stopFadeOut = useCallback(() => {
+    if (fadeOutFrameRef.current) {
+      cancelAnimationFrame(fadeOutFrameRef.current);
+      fadeOutFrameRef.current = null;
+    }
+  }, []);
+
+  const stopAudioImmediately = useCallback(() => {
+    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    audio.pause();
+    audio.currentTime = 0;
+    audio.volume = maxAudioVolume;
+  }, []);
+
+  const clearAudioTimers = useCallback(() => {
+    if (audioTimeoutRef.current) {
+      audioTimeoutRef.current.stop && clearTimeout(audioTimeoutRef.current.stop);
+      audioTimeoutRef.current.fade && clearTimeout(audioTimeoutRef.current.fade);
+      audioTimeoutRef.current = null;
+    }
+  }, []);
+
+  const fadeOutAndStop = useCallback(() => {
+    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    stopFadeOut();
+
+    const startVolume = Math.min(audio.volume || maxAudioVolume, maxAudioVolume);
+    const startTime = performance.now();
+
+    const step = (now) => {
+      const progress = Math.min((now - startTime) / fadeOutDurationMs, 1);
+      const nextVolume = startVolume * (1 - progress);
+      audio.volume = Math.max(0, nextVolume);
+
+      if (progress < 1) {
+        fadeOutFrameRef.current = requestAnimationFrame(step);
+        return;
+      }
+
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = maxAudioVolume;
+      fadeOutFrameRef.current = null;
+    };
+
+    fadeOutFrameRef.current = requestAnimationFrame(step);
+  }, [stopFadeOut]);
 
   const clearChatResponseTimers = useCallback(() => {
     chatResponseTimersRef.current.forEach((timerId) => clearTimeout(timerId));
@@ -1008,6 +1078,14 @@ function App() {
       delete document.body.dataset.lang;
     };
   }, [language, chatOpen, chat.greeting]);
+
+  useEffect(() => {
+    if (audioPlaying) {
+      document.body.dataset.music = "on";
+      return;
+    }
+    delete document.body.dataset.music;
+  }, [audioPlaying]);
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -1110,7 +1188,21 @@ function App() {
   useEffect(() => {
     if (!audioRef.current) return;
 
-    if (audioOn && shehnaiSrc) {
+    if (!activeAudioSrc) {
+      stopAudioImmediately();
+      return;
+    }
+
+    if (lastAudioSrcRef.current !== activeAudioSrc) {
+      audioRef.current.src = activeAudioSrc;
+      audioRef.current.load();
+      lastAudioSrcRef.current = activeAudioSrc;
+    }
+
+    stopFadeOut();
+    clampAudioVolume();
+
+    if (audioOn) {
       audioRef.current
         .play()
         .then(() => {})
@@ -1118,8 +1210,49 @@ function App() {
       return;
     }
 
-    audioRef.current.pause();
-  }, [audioOn]);
+    if (stopModeRef.current === "immediate") {
+      stopAudioImmediately();
+      stopModeRef.current = "fade";
+      return;
+    }
+
+    fadeOutAndStop();
+  }, [audioOn, activeAudioSrc, clampAudioVolume, fadeOutAndStop, stopFadeOut, stopAudioImmediately]);
+
+  useEffect(() => {
+    if (!audioOn) {
+      clearAudioTimers();
+      return;
+    }
+
+    audioTimeoutRef.current = {
+      fade: setTimeout(() => {
+        fadeOutAndStop();
+      }, audioFadeStartMs),
+      stop: setTimeout(() => {
+        setAudioOn(false);
+      }, audioAutoStopMs),
+    };
+
+    return () => {
+      clearAudioTimers();
+    };
+  }, [audioOn, activeAudioSrc, fadeOutAndStop, clearAudioTimers]);
+
+  const handleToggleAudio = useCallback(() => {
+    if (audioOn) {
+      stopModeRef.current = "immediate";
+      clearAudioTimers();
+      fadeOutAndStop();
+      stopAudioImmediately();
+      setAudioOn(false);
+      return;
+    }
+
+    stopModeRef.current = "fade";
+    setAudioOn(true);
+    launchFlowerDrop();
+  }, [audioOn, clearAudioTimers, fadeOutAndStop, launchFlowerDrop, stopAudioImmediately]);
 
   useEffect(() => {
     try {
@@ -2037,7 +2170,17 @@ function App() {
 
   return (
     <>
-      <audio ref={audioRef} loop src={shehnaiSrc} preload="none" />
+      <audio
+        ref={audioRef}
+        loop
+        src={activeAudioSrc}
+        preload="none"
+        onVolumeChange={clampAudioVolume}
+        onPlay={() => setAudioPlaying(true)}
+        onPause={() => setAudioPlaying(false)}
+        onEnded={() => setAudioPlaying(false)}
+        onError={() => setAudioPlaying(false)}
+      />
 
       <div className="loader" aria-hidden="true">
         <div className="crest">SS</div>
@@ -2072,19 +2215,13 @@ function App() {
               className={`topbar-chip-icon ${darkMode ? "moon-mode-icon" : "sun-mode-icon"}`}
             />
             <span>{darkMode ? t.lightMode : t.darkMode}</span>
-          </button>
-          <button
-            onClick={() => {
-              setAudioOn((v) => {
-                const next = !v;
-                if (next) launchFlowerDrop();
-                return next;
-              });
-            }}
-            className="topbar-plain-btn chip-audio-text"
-            disabled={!shehnaiSrc}
-            title={shehnaiSrc ? t.musicToggleTitle : t.musicMissingTitle}
-          >
+            </button>
+            <button
+              onClick={handleToggleAudio}
+              className="topbar-plain-btn chip-audio-text"
+              disabled={!activeAudioSrc}
+              title={activeAudioSrc ? t.musicToggleTitle : t.musicMissingTitle}
+            >
             <img src={musicIconSrc} alt="" aria-hidden="true" className={`topbar-chip-icon music-mode-icon ${audioOn ? "is-on" : "is-off"}`} />
             {audioOn ? t.muteMusic : t.playMusic}
           </button>
