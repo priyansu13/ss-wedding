@@ -14,6 +14,7 @@
   let fadeTimer = null;
   let baseVolume = 1;
   let switchingSource = false;
+  let suppressPlayOnce = false;
 
   function desiredTrack() {
     if (!languageSelect) return null;
@@ -61,11 +62,14 @@
     audioEl.volume = baseVolume;
   }
 
-  function stopWithReset() {
+  function stopWithReset(shouldSyncToggle = true) {
     if (!audioEl) return;
     audioEl.pause();
     audioEl.currentTime = 0;
     resetAudioState();
+    if (shouldSyncToggle) {
+      syncToggleToPaused();
+    }
   }
 
   function startFadeWatcher() {
@@ -94,6 +98,11 @@
   }
 
   function handlePlay() {
+    if (suppressPlayOnce) {
+      suppressPlayOnce = false;
+      stopWithReset(false);
+      return;
+    }
     if (!desiredTrack()) {
       stopWithReset();
       return;
@@ -116,6 +125,15 @@
     if (audioEl.paused) {
       setSrcForLanguage(false);
     }
+  }
+
+  function syncToggleToPaused() {
+    const icon = document.querySelector(".music-mode-icon");
+    if (!icon || !icon.classList.contains("is-on")) return;
+    const btn = icon.closest("button");
+    if (!btn) return;
+    suppressPlayOnce = true;
+    btn.click();
   }
 
   function bindElements() {
