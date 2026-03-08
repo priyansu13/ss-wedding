@@ -30,44 +30,21 @@
   const RELEASE_MS = 190;
 
   let activeEl = null;
-  let audioCtx = null;
-  let lastSoundAt = 0;
+  let lastVibrateAt = 0;
 
   function isDisabled(el) {
     if (!el) return true;
     if (el.hasAttribute("disabled")) return true;
     return el.getAttribute("aria-disabled") === "true";
-  }  function playClick() {
+  }
+
+  function vibrateClick() {
     const now = Date.now();
-    if (now - lastSoundAt < 40) return;
-    lastSoundAt = now;
+    if (now - lastVibrateAt < 40) return;
+    lastVibrateAt = now;
 
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-
-    if (!audioCtx) {
-      audioCtx = new AudioContext();
-    }
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume().catch(() => {});
-    }
-
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const t = audioCtx.currentTime;
-
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(520, t);
-
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.05, t + 0.005);
-    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    osc.start(t);
-    osc.stop(t + 0.085);
+    if (!("vibrate" in navigator)) return;
+    navigator.vibrate(15);
   }
 
   function markPressables(root) {
@@ -131,7 +108,8 @@
 
   function handleClick(event) {
     const target = event.target.closest(SELECTOR);
-    if (!target || isDisabled(target)) return;    playClick();
+    if (!target || isDisabled(target)) return;
+    vibrateClick();
   }
 
   document.addEventListener("pointerdown", handlePointerDown, { passive: true });
