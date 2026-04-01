@@ -120,6 +120,8 @@ const translations = {
     shagunDescription:
       "In Mithilanchal tradition, Shagun marks the graceful beginning of sacred wedding rites, where blessings, gifts, and goodwill flow between families.",
     baraatTitle: "Baraat Experience",
+    baraatDateTitle: "Wedding Date",
+    baraatDateValue: "April 26, 2026",
     departureTitle: "Departure Time",
     departureValue: "6:00 PM from Putai",
     routeTitle: "Route Preview",
@@ -301,6 +303,8 @@ const translations = {
     shagunDescription:
       "मिथिलांचल परंपरा में शगुन, विवाह संस्कारों की शुभ शुरुआत है, जहां आशीर्वाद, उपहार और अपनापन दोनों परिवारों में बहता है।",
     baraatTitle: "बारात अनुभव",
+    baraatDateTitle: "विवाह तिथि",
+    baraatDateValue: "26 अप्रैल 2026",
     departureTitle: "प्रस्थान समय",
     departureValue: "शाम 6:00 बजे, पुतई से",
     routeTitle: "मार्ग विवरण",
@@ -482,6 +486,8 @@ const translations = {
     shagunDescription:
       "मिथिलांचल परंपरा मे शगुन, बियाहक पवित्र विधिक सुग्घर शुरुआत मानल जाइत अछि, जत' आशीर्वाद आ अपनापन दूनू परिवार मे बहेत अछि।",
     baraatTitle: "बारात अनुभव",
+    baraatDateTitle: "बियाह तिथि",
+    baraatDateValue: "26 अप्रैल 2026",
     departureTitle: "प्रस्थान समय",
     departureValue: "साँझ 6:00 बजे, पुतई सँ",
     routeTitle: "मार्ग झलक",
@@ -2208,7 +2214,14 @@ function App() {
 
         <section className="section baraat" id="baraat">
           <h2>{t.baraatTitle}</h2>
-          <div className="grid-two">
+          <p className="section-subtitle">
+            {t.baraatDateTitle}: {t.baraatDateValue}
+          </p>
+          <div className="grid-three">
+            <article className="glass-card">
+              <h3>{t.baraatDateTitle}</h3>
+              <p>{t.baraatDateValue}</p>
+            </article>
             <article className="glass-card">
               <h3>{t.departureTitle}</h3>
               <p>{t.departureValue}</p>
