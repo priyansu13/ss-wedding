@@ -16,11 +16,6 @@ const sunIconSrc = `${import.meta.env.BASE_URL}images/sun.svg`;
 const moonIconSrc = `${import.meta.env.BASE_URL}images/moon.svg`;
 const musicIconSrc = `${import.meta.env.BASE_URL}images/music.png`;
 const flowerImageSrc = `${import.meta.env.BASE_URL}images/flower.png`;
-const invitationPdfRaw =
-  import.meta.env.VITE_INVITATION_PDF_URL || "invitation.pdf";
-const invitationPdf = /^https?:\/\//i.test(invitationPdfRaw)
-  ? invitationPdfRaw
-  : `${import.meta.env.BASE_URL}${invitationPdfRaw.replace(/^\/+/, "")}`;
 const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "+91 6207398499";
 const rsvpGoogleFormActionUrl = import.meta.env.VITE_RSVP_GOOGLE_FORM_ACTION_URL || "";
 const rsvpGoogleFormNameEntry = import.meta.env.VITE_RSVP_GOOGLE_FORM_NAME_ENTRY || "";
@@ -115,30 +110,10 @@ const translations = {
     calendarDetails:
       "With blessings of both families, join us for a Mithilanchal wedding celebration.",
     calendarLocation: "Madhubani, Bihar, India",
-    storyTitle: "Our Story",
-    storySubtitle: "A timeline of moments that led us to forever.",
-    timeline: [
-      {
-        title: "First Glance",
-        date: "April 24, 2026",
-        text: "Our first glance in Putai, Darbhanga turned into the beginning of a lifelong poem.",
-      },
-      {
-        title: "Families United",
-        date: "April 24, 2026",
-        text: "In the warmth of elders' blessings, two families found one shared rhythm.",
-      },
-      {
-        title: "The Wedding",
-        date: "April 26, 2026",
-        text: "Witness the Saptapadi as we unite through our ancient Vedic rituals. A traditional Maithil Vivah celebrated with the grace of the seven vows. We seek your presence and blessings on this auspicious day.",
-      },
-    ],
     shagunTitle: "Shagun Ceremony",
     dateLabel: "Date",
     timeLabel: "Time",
     venueLabel: "Venue",
-    dressCodeLabel: "Dress Code",
     shagunDate: "April 24, 2026",
     shagunTime: "6:30 PM onwards",
     shagunVenue: "Putai, Bihar",
@@ -147,18 +122,16 @@ const translations = {
       "In Mithilanchal tradition, Shagun marks the graceful beginning of sacred wedding rites, where blessings, gifts, and goodwill flow between families.",
     baraatTitle: "Baraat Experience",
     departureTitle: "Departure Time",
-    departureValue: "5:00 PM from Putai",
+    departureValue: "6:00 PM from Putai",
     routeTitle: "Route Preview",
-    routeValue: "Putai -> Madhubani Town -> Wedding Venue",
-    contactTitle: "Contact Person",
-    contactValue: "To be updated",
-    venueTitle: "Grand Venue",
+    routeValue:
+      "Putai -> Madhubani Town -> Hotel Kanha Shyam | Total distance: 37.8 km | Expected time: 1 hr 33 min",
+    venueTitle: "Wedding Venue",
     venueName: "Hotel Kanha Shyam",
     venueAddress: "Madhubani, Bihar 847211",
     openMaps: "Open in Google Maps",
-    nearestRailway: "Nearest Railway Station: Madhubani Railway Station",
-    nearestAirport: "Nearest Airport: Darbhanga Airport",
-    landmark: "Landmark: to be updated",
+    nearestRailway: "Nearest Railway Station: Madhubani Railway Station (2.6 km)",
+    nearestAirport: "Nearest Airport: Darbhanga Airport (32.3 km)",
     mapTitle: "Wedding venue map",
     weatherTitle: "Live Weather & AQI",
     weatherSubtitle: "Auto-updated for Madhubani",
@@ -224,8 +197,6 @@ const translations = {
     whatsappConfirm: "WhatsApp Confirm",
     rsvpThanks: "Welcome. Your confirmation is received.",
     rsvpSubmitFailed: "Could not confirm now. Please try again.",
-    downloadPdf: "Download Invitation PDF",
-    enablePdf: "Set VITE_INVITATION_PDF_URL to enable PDF download.",
     viewAlbum: "View Album",
     uploadPhoto: "Upload Photo",
     messageWall: "Guest Message Wall",
@@ -263,7 +234,6 @@ const translations = {
     moreInfo: "More Information",
     backHome: "Back to Home",
     navHome: "Home",
-    navStory: "Story",
     navShagun: "Shagun",
     navBaraat: "Baraat",
     navVenue: "Venue",
@@ -322,30 +292,10 @@ const translations = {
     calendarDetails:
       "दोनों परिवारों के आशीर्वाद के साथ, मिथिलांचल विवाह समारोह में आपका स्वागत है।",
     calendarLocation: "मधुबनी, बिहार, भारत",
-    storyTitle: "हमारी कहानी",
-    storySubtitle: "वे खूबसूरत पल जिन्होंने हमें हमेशा के लिए जोड़ा।",
-    timeline: [
-      {
-        title: "पहली मुलाकात",
-        date: "24 अप्रैल 2026",
-        text: "पुतई, दरभंगा में पहली झलक ने जीवनभर के साथ की शुरुआत कर दी।",
-      },
-      {
-        title: "परिवारों का मिलन",
-        date: "24 अप्रैल 2026",
-        text: "बड़ों के आशीर्वाद में दो परिवार एक ही सुर में बंध गए।",
-      },
-      {
-        title: "विवाह",
-        date: "26 अप्रैल 2026",
-        text: "सप्तपदी के पावन क्षण के साक्षी बनें, जब हम प्राचीन वैदिक विधियों से एक हो रहे हैं। सात वचनों की गरिमा के साथ पारंपरिक मैथिल विवाह का उत्सव है। इस शुभ दिन पर आपके आगमन और आशीर्वाद की कामना है।",
-      },
-    ],
     shagunTitle: "शगुन समारोह",
     dateLabel: "तिथि",
     timeLabel: "समय",
     venueLabel: "स्थान",
-    dressCodeLabel: "वेशभूषा",
     shagunDate: "24 अप्रैल 2026",
     shagunTime: "शाम 6:30 बजे से",
     shagunVenue: "पुतई, बिहार",
@@ -354,18 +304,16 @@ const translations = {
       "मिथिलांचल परंपरा में शगुन, विवाह संस्कारों की शुभ शुरुआत है, जहां आशीर्वाद, उपहार और अपनापन दोनों परिवारों में बहता है।",
     baraatTitle: "बारात अनुभव",
     departureTitle: "प्रस्थान समय",
-    departureValue: "शाम 5:00 बजे, पुतई से",
+    departureValue: "शाम 6:00 बजे, पुतई से",
     routeTitle: "मार्ग विवरण",
-    routeValue: "पुतई -> मधुबनी टाउन -> विवाह स्थान",
-    contactTitle: "संपर्क व्यक्ति",
-    contactValue: "जल्द अपडेट किया जाएगा",
-    venueTitle: "भव्य स्थान",
+    routeValue:
+      "पुतई -> मधुबनी टाउन -> होटल कान्हा श्याम | कुल दूरी: 37.8 किमी | अनुमानित समय: 1 घंटा 33 मिनट",
+    venueTitle: "विवाह स्थान",
     venueName: "होटल कान्हा श्याम",
     venueAddress: "मधुबनी, बिहार 847211",
     openMaps: "Google Maps में खोलें",
-    nearestRailway: "निकटतम रेलवे स्टेशन: मधुबनी रेलवे स्टेशन",
-    nearestAirport: "निकटतम हवाई अड्डा: दरभंगा एयरपोर्ट",
-    landmark: "लैंडमार्क: अपडेट होना बाकी",
+    nearestRailway: "निकटतम रेलवे स्टेशन: मधुबनी रेलवे स्टेशन (2.6 किमी)",
+    nearestAirport: "निकटतम हवाई अड्डा: दरभंगा एयरपोर्ट (32.3 किमी)",
     mapTitle: "विवाह स्थान का मानचित्र",
     weatherTitle: "लाइव मौसम और AQI",
     weatherSubtitle: "मधुबनी के लिए स्वतः अपडेट",
@@ -431,8 +379,6 @@ const translations = {
     whatsappConfirm: "व्हाट्सऐप पुष्टि",
     rsvpThanks: "स्वागत है। आपकी पुष्टि दर्ज हो गई है।",
     rsvpSubmitFailed: "अभी पुष्टि नहीं हो पाई। कृपया फिर कोशिश करें।",
-    downloadPdf: "निमंत्रण पत्र डाउनलोड करें",
-    enablePdf: "PDF डाउनलोड के लिए VITE_INVITATION_PDF_URL सेट करें।",
     viewAlbum: "एल्बम देखें",
     uploadPhoto: "फोटो अपलोड करें",
     messageWall: "अतिथि संदेश दीवार",
@@ -470,7 +416,6 @@ const translations = {
     moreInfo: "अधिक जानकारी",
     backHome: "होम पर जाएँ",
     navHome: "होम",
-    navStory: "कहानी",
     navShagun: "शगुन",
     navBaraat: "बारात",
     navVenue: "स्थान",
@@ -529,30 +474,10 @@ const translations = {
     calendarDetails:
       "दूनू परिवारक आशीर्वाद संग मिथिलांचल बियाह उत्सव मे अपनेक स्वागत अछि।",
     calendarLocation: "मधुबनी, बिहार, भारत",
-    storyTitle: "हमर कहानी",
-    storySubtitle: "ओ सब पल जाहि सँ हमसभ सदा लेल एक भ' गेलहुँ।",
-    timeline: [
-      {
-        title: "पहिल झलक",
-        date: "24 अप्रैल 2026",
-        text: "पुतई, दरभंगा मे पहिल झलक जीवन भरिक साथक शुरुआत बनि गेल।",
-      },
-      {
-        title: "परिवारक मिलन",
-        date: "24 अप्रैल 2026",
-        text: "बड़-बुजुर्गक आशीर्वाद मे दूनू परिवार एके सुर मे बान्हल गेल।",
-      },
-      {
-        title: "बियाह",
-        date: "26 अप्रैल 2026",
-        text: "सप्तपदीक पावन क्षणक साक्षी बनू, जत' हम प्राचीन वैदिक विधिसँ एक भ' रहल छी। सात वचनक गरिमा संग ई पारंपरिक मैथिल बियाहक उत्सव अछि। एहि शुभ दिन पर अहाँक आगमन आ आशीर्वादक कामना अछि।",
-      },
-    ],
     shagunTitle: "शगुन समारोह",
     dateLabel: "तिथि",
     timeLabel: "समय",
     venueLabel: "स्थान",
-    dressCodeLabel: "पोशाक",
     shagunDate: "24 अप्रैल 2026",
     shagunTime: "साँझ 6:30 बजे सँ",
     shagunVenue: "पुतई, बिहार",
@@ -561,18 +486,16 @@ const translations = {
       "मिथिलांचल परंपरा मे शगुन, बियाहक पवित्र विधिक सुग्घर शुरुआत मानल जाइत अछि, जत' आशीर्वाद आ अपनापन दूनू परिवार मे बहेत अछि।",
     baraatTitle: "बारात अनुभव",
     departureTitle: "प्रस्थान समय",
-    departureValue: "साँझ 5:00 बजे, पुतई सँ",
+    departureValue: "साँझ 6:00 बजे, पुतई सँ",
     routeTitle: "मार्ग झलक",
-    routeValue: "पुतई -> मधुबनी टाउन -> बियाह स्थान",
-    contactTitle: "संपर्क व्यक्ति",
-    contactValue: "जल्द अपडेट कएल जायत",
-    venueTitle: "भव्य स्थान",
+    routeValue:
+      "पुतई -> मधुबनी टाउन -> होटल कान्हा श्याम | कुल दूरी: 37.8 किमी | अनुमानित समय: 1 घंटा 33 मिनट",
+    venueTitle: "विवाह स्थान",
     venueName: "होटल कान्हा श्याम",
     venueAddress: "मधुबनी, बिहार 847211",
     openMaps: "Google Maps मे खोलू",
-    nearestRailway: "नजदीकी रेलवे स्टेशन: मधुबनी रेलवे स्टेशन",
-    nearestAirport: "नजदीकी एयरपोर्ट: दरभंगा एयरपोर्ट",
-    landmark: "पहचान चिन्ह: अपडेट बाकी अछि",
+    nearestRailway: "नजदीकी रेलवे स्टेशन: मधुबनी रेलवे स्टेशन (2.6 किमी)",
+    nearestAirport: "नजदीकी एयरपोर्ट: दरभंगा एयरपोर्ट (32.3 किमी)",
     mapTitle: "बियाह स्थान मानचित्र",
     weatherTitle: "लाइव मौसम आ AQI",
     weatherSubtitle: "मधुबनी लेल स्वतः अपडेट",
@@ -638,8 +561,6 @@ const translations = {
     whatsappConfirm: "व्हाट्सऐप पुष्टि",
     rsvpThanks: "स्वागत। अहाँक पुष्टि दर्ज भ' गेल अछि।",
     rsvpSubmitFailed: "एखन पुष्टि नहि भ' सकल। कृपया फेर प्रयास करू।",
-    downloadPdf: "निमंत्रण पत्र डाउनलोड करू",
-    enablePdf: "PDF डाउनलोड लेल VITE_INVITATION_PDF_URL सेट करू।",
     viewAlbum: "एल्बम देखू",
     uploadPhoto: "फोटो अपलोड करू",
     messageWall: "अतिथि संदेश दीवार",
@@ -677,7 +598,6 @@ const translations = {
     moreInfo: "अधिक जानकारी",
     backHome: "होम पर जाउ",
     navHome: "होम",
-    navStory: "कहानी",
     navShagun: "शगुन",
     navBaraat: "बारात",
     navVenue: "स्थान",
@@ -1620,14 +1540,6 @@ function App() {
       return points([chat.ConfirmationHint]);
     }
 
-    if (has(["dress", "code", "outfit", "पोशाक", "वेशभूषा"])) {
-      return points([`${t.dressCodeLabel}: ${t.shagunDress}`]);
-    }
-
-    if (has(["contact", "phone", "number", "संपर्क"])) {
-      return points([`${t.contactTitle}: ${t.contactValue}`]);
-    }
-
     if (has(["language", "hindi", "english", "maithili", "भाषा"])) {
       return points([`${t.language}: ${t.languageHindi}, ${t.languageMaithili}, ${t.languageEnglish}`]);
     }
@@ -1694,7 +1606,6 @@ function App() {
       `Wedding date line: ${t.dateLine}`,
       `Shagun: ${t.shagunDate}, ${t.shagunTime}, ${t.shagunVenue}`,
       `Wedding venue: ${t.venueName}, ${t.venueAddress}`,
-      `Contact: ${t.contactValue}`,
       `User question: ${question}`,
     ].join("\n");
 
@@ -1933,7 +1844,6 @@ function App() {
       ].join("\n");
       setChatPending("gallery");
     } else if (index === 4) {
-      reply = `${t.contactTitle}: ${t.contactValue}`;
     } else {
       sendChatMessage(prompt);
       return;
@@ -2129,7 +2039,6 @@ function App() {
       : selectedFolderLink;
   const hasUserChatted = chatMessages.some((m) => m.sender === "user");
   const quickSections = [
-    { id: "story", label: t.navStory },
     { id: "shagun", label: t.navShagun },
     { id: "baraat", label: t.navBaraat },
     { id: "venue", label: t.navVenue },
@@ -2143,11 +2052,6 @@ function App() {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       setQuickNavOpen(false);
     }
-  }
-
-  function handlePdfClick(e) {
-    e.preventDefault();
-    window.alert("TBD");
   }
 
   function closeChat() {
@@ -2305,20 +2209,6 @@ function App() {
           <div className="scroll-indicator" aria-hidden="true" />
         </section>
 
-        <section className="section story" id="story">
-          <h2>{t.storyTitle}</h2>
-          <p className="section-subtitle">{t.storySubtitle}</p>
-          <div className="timeline">
-            {t.timeline.map((item) => (
-              <article key={item.title} className="timeline-card reveal">
-                <p>{item.date}</p>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section className="section shagun" id="shagun">
           <h2>{t.shagunTitle}</h2>
           <div className="gold-card reveal">
@@ -2335,10 +2225,6 @@ function App() {
                 <dt>{t.venueLabel}</dt>
                 <dd>{t.shagunVenue}</dd>
               </div>
-              <div>
-                <dt>{t.dressCodeLabel}</dt>
-                <dd>{t.shagunDress}</dd>
-              </div>
             </dl>
             <p>{t.shagunDescription}</p>
           </div>
@@ -2346,13 +2232,6 @@ function App() {
 
         <section className="section baraat" id="baraat">
           <h2>{t.baraatTitle}</h2>
-          <div className="procession reveal" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
           <div className="grid-two">
             <article className="glass-card">
               <h3>{t.departureTitle}</h3>
@@ -2361,10 +2240,6 @@ function App() {
             <article className="glass-card">
               <h3>{t.routeTitle}</h3>
               <p>{t.routeValue}</p>
-            </article>
-            <article className="glass-card">
-              <h3>{t.contactTitle}</h3>
-              <p>{t.contactValue}</p>
             </article>
           </div>
         </section>
@@ -2386,7 +2261,6 @@ function App() {
               <ul>
                 <li>{t.nearestRailway}</li>
                 <li>{t.nearestAirport}</li>
-                <li>{t.landmark}</li>
               </ul>
             </article>
             <div className="map-frame">
@@ -2575,9 +2449,6 @@ function App() {
               </div>
               {rsvpSubmitted ? <p className="notice">{t.rsvpThanks}</p> : null}
               {rsvpError ? <p className="notice">{rsvpError}</p> : null}
-              <a className="btn btn-outline pdf-link" href={invitationPdf || "#"} onClick={handlePdfClick}>
-                {t.downloadPdf}
-              </a>
             </form>
 
             <article className="gold-card message-wall">
