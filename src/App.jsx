@@ -92,7 +92,6 @@ const translations = {
     languageEnglish: "English",
     darkMode: "Dark",
     lightMode: "Light",
-    alerts: "Alerts",
     playMusic: "Play",
     muteMusic: "Mute",
     musicToggleTitle: "Toggle background music",
@@ -274,7 +273,6 @@ const translations = {
     languageEnglish: "अंग्रेज़ी",
     darkMode: "डार्क मोड",
     lightMode: "लाइट मोड",
-    alerts: "अलर्ट",
     playMusic: "संगीत चलाएं",
     muteMusic: "संगीत बंद करें",
     musicToggleTitle: "संगीत चालू/बंद करें",
@@ -456,7 +454,6 @@ const translations = {
     languageEnglish: "अंग्रेजी",
     darkMode: "डार्क मोड",
     lightMode: "लाइट मोड",
-    alerts: "अलर्ट",
     playMusic: "संगीत चलाउ",
     muteMusic: "संगीत बन्न करू",
     musicToggleTitle: "संगीत चालू/बन्न करू",
@@ -2129,27 +2126,6 @@ function App() {
             >
             <img src={musicIconSrc} alt="" aria-hidden="true" className={`topbar-chip-icon music-mode-icon ${audioOn ? "is-on" : "is-off"}`} />
             {audioOn ? t.muteMusic : t.playMusic}
-          </button>
-          <button
-            type="button"
-            className={`topbar-notify-btn ${notificationPermission === "granted" ? "is-active" : ""}`}
-            onClick={handleEnableBrowserAlerts}
-            aria-label={t.updatesEnableBrowser}
-            title={t.updatesEnableBrowser}
-          >
-            <svg viewBox="0 0 24 24" className="chip-bell-icon" aria-hidden="true">
-              <path
-                d="M12 3.5a5 5 0 0 0-5 5v2.8c0 .95-.33 1.88-.93 2.62l-1.15 1.4c-.72.88-.1 2.18 1.04 2.18h12.08c1.14 0 1.76-1.3 1.04-2.18l-1.15-1.4a4.16 4.16 0 0 1-.93-2.62V8.5a5 5 0 0 0-5-5Z"
-                fill="currentColor"
-              />
-              <path
-                d="M9.85 19a2.15 2.15 0 0 0 4.3 0h-4.3Z"
-                fill="currentColor"
-              />
-            </svg>
-            {hasFreshUpdate && notificationPermission === "granted" ? (
-              <span className="chip-notify-dot" aria-hidden="true" />
-            ) : null}
           </button>
         </div>
       </header>
