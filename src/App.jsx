@@ -5,7 +5,7 @@ const weddingDate = new Date("2026-04-26T19:00:00+05:30");
 const mapsEmbedUrl =
   import.meta.env.VITE_GOOGLE_MAPS_EMBED_URL ||
   `https://www.google.com/maps?q=${encodeURIComponent(
-    "mudhubani hotel, Madhubani, Bihar"
+    "Kanha Shyam Hotel, Madhubani, Bihar"
   )}&output=embed`;
 const shehnaiSrc =
   import.meta.env.VITE_SHEHNAI_AUDIO_URL ||
@@ -38,7 +38,8 @@ const geminiModel = import.meta.env.VITE_GEMINI_MODEL || "gemini-1.5-flash";
 const geminiApiBaseUrl =
   import.meta.env.VITE_GEMINI_API_BASE_URL || "https://generativelanguage.googleapis.com/v1beta";
 const updatesFeedUrl = `${import.meta.env.BASE_URL}update-feed.json`;
-const weddingMapLink = "https://maps.google.com/?q=Madhubani%20Bihar";
+const weddingMapLink =
+  "https://maps.google.com/?q=Kanha%20Shyam%20Hotel%2C%20Madhubani%2C%20Bihar";
 const shagunMapLink = "https://maps.google.com/?q=Putai%20Bihar";
 const maxAudioVolume = 0.2;
 const fadeOutDurationMs = 10000;
@@ -152,11 +153,11 @@ const translations = {
     contactTitle: "Contact Person",
     contactValue: "To be updated",
     venueTitle: "Grand Venue",
-    venueName: "to be updated",
+    venueName: "Hotel Kanha Shyam",
     venueAddress: "Madhubani, Bihar 847211",
     openMaps: "Open in Google Maps",
-    nearestRailway: "Nearest Railway Station: Darbhanga Junction (5.8 km)",
-    nearestAirport: "Nearest Airport: Darbhanga Airport (8.1 km)",
+    nearestRailway: "Nearest Railway Station: Madhubani Railway Station",
+    nearestAirport: "Nearest Airport: Darbhanga Airport",
     landmark: "Landmark: to be updated",
     mapTitle: "Wedding venue map",
     weatherTitle: "Live Weather & AQI",
@@ -359,11 +360,11 @@ const translations = {
     contactTitle: "संपर्क व्यक्ति",
     contactValue: "जल्द अपडेट किया जाएगा",
     venueTitle: "भव्य स्थान",
-    venueName: "अपडेट होना बाकी",
+    venueName: "होटल कान्हा श्याम",
     venueAddress: "मधुबनी, बिहार 847211",
     openMaps: "Google Maps में खोलें",
-    nearestRailway: "निकटतम रेलवे स्टेशन: दरभंगा जंक्शन (5.8 किमी)",
-    nearestAirport: "निकटतम हवाई अड्डा: दरभंगा एयरपोर्ट (8.1 किमी)",
+    nearestRailway: "निकटतम रेलवे स्टेशन: मधुबनी रेलवे स्टेशन",
+    nearestAirport: "निकटतम हवाई अड्डा: दरभंगा एयरपोर्ट",
     landmark: "लैंडमार्क: अपडेट होना बाकी",
     mapTitle: "विवाह स्थान का मानचित्र",
     weatherTitle: "लाइव मौसम और AQI",
@@ -566,11 +567,11 @@ const translations = {
     contactTitle: "संपर्क व्यक्ति",
     contactValue: "जल्द अपडेट कएल जायत",
     venueTitle: "भव्य स्थान",
-    venueName: "अपडेट बाकी अछि",
+    venueName: "होटल कान्हा श्याम",
     venueAddress: "मधुबनी, बिहार 847211",
     openMaps: "Google Maps मे खोलू",
-    nearestRailway: "नजदीकी रेलवे स्टेशन: दरभंगा जंक्शन (5.8 किमी)",
-    nearestAirport: "नजदीकी एयरपोर्ट: दरभंगा एयरपोर्ट (8.1 किमी)",
+    nearestRailway: "नजदीकी रेलवे स्टेशन: मधुबनी रेलवे स्टेशन",
+    nearestAirport: "नजदीकी एयरपोर्ट: दरभंगा एयरपोर्ट",
     landmark: "पहचान चिन्ह: अपडेट बाकी अछि",
     mapTitle: "बियाह स्थान मानचित्र",
     weatherTitle: "लाइव मौसम आ AQI",
@@ -2374,7 +2375,12 @@ function App() {
             <article className="gold-card">
               <h3>{t.venueName}</h3>
               <p>{t.venueAddress}</p>
-              <a className="btn" href="https://maps.google.com/?q=mudhubani hotel Madhubani Bihar" target="_blank" rel="noreferrer">
+              <a
+                className="btn"
+                href="https://maps.google.com/?q=Kanha%20Shyam%20Hotel%20Madhubani%20Bihar"
+                target="_blank"
+                rel="noreferrer"
+              >
                 {t.openMaps}
               </a>
               <ul>
